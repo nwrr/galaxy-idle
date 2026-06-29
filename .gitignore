@@ -1,1 +1,7 @@
 /target
+
+# Asset sumber generated (ComfyUI) — abaikan set hasil generate, simpan input.
+/assets/source/*
+!/assets/source/*.md
+!/assets/source/references/
+!/assets/source/characters/

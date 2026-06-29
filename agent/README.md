@@ -1,37 +1,24 @@
-# agent/ — Looping-Agent System
+# agent/ — Looping-Agent System (multi-fase)
 
-Infrastruktur agar `galaxy-idle` bisa dibangun & diiterasi oleh **looping agent** (Claude Code
-`/loop`) dari ide → goal, dengan verifikasi tampilan terminal otomatis.
+Infrastruktur agar `galaxy-idle` dibangun & diiterasi oleh **looping agent** (Claude Code `/loop`)
+dengan verifikasi terminal otomatis. Pekerjaan dibagi per **fase**; tiap fase = satu workspace loop
+mandiri (GOALS, CHECKLIST, PROGRESS, state.json, ITERATION_LOG, LOOP/RUNBOOK/PROMPTS sendiri).
 
-## Sumber Kebenaran
+## Fase
 
-- **Spec game:** [`../abstraction/`](../abstraction/) (00–16) — apa yang dibangun.
-- **Proses build:** folder ini — bagaimana agent membangunnya secara iteratif.
-- **Kode:** [`../src/`](../src/), asset [`../assets/`](../assets/).
+| Fase | Fokus | Status | Masuk |
+|------|-------|--------|-------|
+| **Phase 1** | Build game scaffold → DoD (M0–M9, ekonomi/sim/save/prestige/procgen) | ✅ SELESAI (iter 37) | [`phase1/`](phase1/) |
+| **Phase 2** | **UI/UX design** — sprite/portrait berwarna, layout, theme; pakai ComfyUI asset generator + ANSI converter | 🟦 AKTIF | [`phase2/`](phase2/) |
 
-## File & Perannya
+## Bersama Lintas-Fase
 
-| File | Peran | Siapa update |
-|------|-------|--------------|
-| [`GOALS.md`](GOALS.md) | Milestone M0–M9 + Definition of Done terukur | manusia (jarang) |
-| [`LOOP.md`](LOOP.md) | Protokol satu iterasi (plan→build→verify→log→next) + stop conditions | manusia (jarang) |
-| [`CHECKLIST.md`](CHECKLIST.md) | Daftar tugas berfase, checkbox `[ ]/[x]` | **agent tiap iterasi** |
-| [`PROGRESS.md`](PROGRESS.md) | Ringkasan state terbaca-manusia: milestone aktif, blocker, next | **agent tiap iterasi** |
-| [`state.json`](state.json) | State machine-readable (iter, milestone, failing_checks) | **agent tiap iterasi** |
-| [`ITERATION_LOG.md`](ITERATION_LOG.md) | Log append-only tiap iterasi | **agent tiap iterasi** |
-| [`PROMPTS.md`](PROMPTS.md) | Prompt subagent siap-pakai | manusia/agent |
-| [`RUNBOOK.md`](RUNBOOK.md) | Cara menjalankan loop otomatis + guardrails | manusia |
-| [`test/`](test/) | Verifikasi visual terminal (snapshot TestBackend) | agent + manusia |
+- [`test/`](test/) — verifikasi visual terminal (snapshot `TestBackend`); dipakai `tests/snapshots.rs`
+  & `scripts/verify.sh`. **Tidak** dipindah ke fase manapun (kode mereferensikan `agent/test/`).
+- Spec game: [`../abstraction/`](../abstraction/) (00–16) — sumber kebenaran mekanik (jangan diubah loop).
+- Kode: [`../src/`](../src/) · asset: [`../assets/`](../assets/) · generator: [`../comfyui/`](../comfyui/),
+  [`../scripts/gen_assets.py`](../scripts/gen_assets.py), [`../scripts/genassets/`](../scripts/genassets/).
 
-## Alur Singkat (1 iterasi)
+## Memulai / Melanjutkan Loop
 
-```
-baca state.json + CHECKLIST.md
-   └─▶ pilih item belum selesai (urut fase)
-        └─▶ build (edit src/assets) sesuai spec abstraction/
-             └─▶ verify: scripts/verify.sh (fmt+clippy+test+snapshot)
-                  ├─ hijau → centang CHECKLIST, update PROGRESS+state, log, lanjut
-                  └─ merah → perbaiki; 2× gagal akar sama → eskalasi (stop, tulis blocker)
-```
-
-Mulai → baca [`RUNBOOK.md`](RUNBOOK.md).
+Fase aktif → buka README fase itu untuk prompt `/loop` & guardrails. Saat ini: [`phase2/RUNBOOK.md`](phase2/RUNBOOK.md).
