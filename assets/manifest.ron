@@ -1,0 +1,58 @@
+// Registry asset statis. Di-load saat startup; lihat assets/FORMAT.md & assets/README.md.
+// Format: Vec<AssetEntry { id, path, kind, w, h }>
+// - Sprite celestial = ANSI half-block berwarna (.ans). path = varian CANONICAL `lg/tc`
+//   (besar, truecolor). Tiap base = 1 sub-folder berisi 9 file `<size>.<depth>.ans`
+//   (size ∈ {sm,md,lg}, depth ∈ {tc,256,16}) — lihat CONVENTIONS.md §1. Runtime menurunkan
+//   ukuran/depth: `sprites/<base>/<size>.<depth>.ans`. w/h = box sel canonical (lg = 64x32).
+// - Banner/Frame = .txt (banner = logo ANSI-shadow). w/h = ukuran sel.
+// - Portrait (karakter) = .png, dirender via ratatui-image (Sixel/Kitty/iTerm2, fallback
+//   half-block). w/h = AREA TAMPIL dalam sel (widget), bukan resolusi gambar.
+//   Wajah butuh resolusi → ASCII tak memadai. Lihat abstraction/design/06-ui.md & 07-architecture.md.
+[
+    // -- Banner --
+    ( id: "banner_title",   path: "banner/title.txt",        kind: Banner,   w: 72, h: 14 ),
+    ( id: "banner_small",   path: "banner/title_small.txt",  kind: Banner,   w: 44, h: 5  ),
+
+    // -- Sprite celestial = ANSI half-block berwarna. path = varian canonical <base>/lg.tc.ans (64x32).
+    //    Varian lain di folder yg sama: md.* (40x20), sm.* (20x10); depth .256/.16 utk fallback. --
+    ( id: "planet_terran",      path: "sprites/planet_terran/lg.tc.ans",      kind: Sprite, w: 64, h: 32 ),
+    ( id: "planet_ocean",       path: "sprites/planet_ocean/lg.tc.ans",       kind: Sprite, w: 64, h: 32 ),
+    ( id: "planet_gasgiant",    path: "sprites/planet_gasgiant/lg.tc.ans",    kind: Sprite, w: 64, h: 32 ),
+    ( id: "planet_deadworld",   path: "sprites/planet_deadworld/lg.tc.ans",   kind: Sprite, w: 64, h: 32 ),
+    ( id: "planet_crystalworld",path: "sprites/planet_crystalworld/lg.tc.ans",kind: Sprite, w: 64, h: 32 ),
+    ( id: "planet_iceworld",    path: "sprites/planet_iceworld/lg.tc.ans",    kind: Sprite, w: 64, h: 32 ),
+    ( id: "planet_lavaworld",   path: "sprites/planet_lavaworld/lg.tc.ans",   kind: Sprite, w: 64, h: 32 ),
+    ( id: "planet_ironworld",   path: "sprites/planet_ironworld/lg.tc.ans",   kind: Sprite, w: 64, h: 32 ),
+    ( id: "planet_asteroidbelt",path: "sprites/planet_asteroidbelt/lg.tc.ans",kind: Sprite, w: 64, h: 32 ),
+    ( id: "star_sun",           path: "sprites/star_sun/lg.tc.ans",           kind: Sprite, w: 64, h: 32 ),
+    ( id: "ship",               path: "sprites/ship/lg.tc.ans",               kind: Sprite, w: 64, h: 32 ),
+
+    // -- Frame UI (dinamis) --
+    ( id: "frame_full",     path: "ui/frame_full.txt",       kind: Frame, w: 0, h: 0 ),
+    ( id: "frame_compact",  path: "ui/frame_compact.txt",    kind: Frame, w: 0, h: 0 ),
+    ( id: "frame_minimal",  path: "ui/frame_minimal.txt",    kind: Frame, w: 0, h: 0 ),
+
+    // -- Karakter portrait = PNG (ratatui-image). w/h = area tampil sel (~44x32), bukan resolusi.
+    //    Runtime PNG 512x512 di-publish dari assets/source/characters/ oleh gen_assets.py. --
+    ( id: "char_male_01",   path: "characters/male/char_male_01.png",     kind: Portrait, w: 44, h: 32 ),
+    ( id: "char_male_02",   path: "characters/male/char_male_02.png",     kind: Portrait, w: 44, h: 32 ),
+    ( id: "char_male_03",   path: "characters/male/char_male_03.png",     kind: Portrait, w: 44, h: 32 ),
+    ( id: "char_male_04",   path: "characters/male/char_male_04.png",     kind: Portrait, w: 44, h: 32 ),
+    ( id: "char_male_05",   path: "characters/male/char_male_05.png",     kind: Portrait, w: 44, h: 32 ),
+    ( id: "char_male_06",   path: "characters/male/char_male_06.png",     kind: Portrait, w: 44, h: 32 ),
+    ( id: "char_male_07",   path: "characters/male/char_male_07.png",     kind: Portrait, w: 44, h: 32 ),
+    ( id: "char_female_01", path: "characters/female/char_female_01.png", kind: Portrait, w: 44, h: 32 ),
+    ( id: "char_female_02", path: "characters/female/char_female_02.png", kind: Portrait, w: 44, h: 32 ),
+    ( id: "char_female_03", path: "characters/female/char_female_03.png", kind: Portrait, w: 44, h: 32 ),
+    ( id: "char_female_04", path: "characters/female/char_female_04.png", kind: Portrait, w: 44, h: 32 ),
+    ( id: "char_female_05", path: "characters/female/char_female_05.png", kind: Portrait, w: 44, h: 32 ),
+    ( id: "char_female_06", path: "characters/female/char_female_06.png", kind: Portrait, w: 44, h: 32 ),
+    ( id: "char_female_07", path: "characters/female/char_female_07.png", kind: Portrait, w: 44, h: 32 ),
+    ( id: "char_alien_01",  path: "characters/alien/char_alien_01.png",   kind: Portrait, w: 44, h: 32 ),
+    ( id: "char_alien_02",  path: "characters/alien/char_alien_02.png",   kind: Portrait, w: 44, h: 32 ),
+    ( id: "char_alien_03",  path: "characters/alien/char_alien_03.png",   kind: Portrait, w: 44, h: 32 ),
+    ( id: "char_alien_04",  path: "characters/alien/char_alien_04.png",   kind: Portrait, w: 44, h: 32 ),
+    ( id: "char_alien_05",  path: "characters/alien/char_alien_05.png",   kind: Portrait, w: 44, h: 32 ),
+    ( id: "char_alien_06",  path: "characters/alien/char_alien_06.png",   kind: Portrait, w: 44, h: 32 ),
+    ( id: "char_alien_07",  path: "characters/alien/char_alien_07.png",   kind: Portrait, w: 44, h: 32 ),
+]

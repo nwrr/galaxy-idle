@@ -1,0 +1,68 @@
+// data/recipes.ron — Vec<RecipeDef>. Katalog: content/12-crafting.md.
+// inputs/outputs/item_outputs = id resources/items. building_id = id di buildings.ron.
+// craft_time_secs 0.0 = instan/tick; >0 = akumulasi (progress bar). requires_blueprint → harus
+// dimiliki dulu (PrestigeState.blueprints). tier: Basic|Advanced|Rare|Special.
+[
+    // ── Smelting / Refining (Ingot) ────────────────────────────────────────
+    (id: "smelt_iron", inputs: [("iron", 2.0)], outputs: [("iron_ingot", 1.0)], item_outputs: [], craft_time_secs: 1.0, building_id: "smelter", requires_blueprint: false, tier: Advanced),
+    (id: "smelt_copper", inputs: [("copper", 2.0)], outputs: [("copper_ingot", 1.0)], item_outputs: [], craft_time_secs: 1.0, building_id: "smelter", requires_blueprint: false, tier: Advanced),
+    (id: "smelt_aluminum", inputs: [("aluminum", 2.0)], outputs: [("aluminum_ingot", 1.0)], item_outputs: [], craft_time_secs: 1.0, building_id: "smelter", requires_blueprint: false, tier: Advanced),
+    (id: "smelt_titanium", inputs: [("iron", 3.0), ("magnesium", 1.0)], outputs: [("titanium", 1.0)], item_outputs: [], craft_time_secs: 3.0, building_id: "arc_furnace", requires_blueprint: false, tier: Advanced),
+    (id: "steel_mill", inputs: [("iron", 2.0), ("carbon", 1.0)], outputs: [("steel", 1.0)], item_outputs: [], craft_time_secs: 0.0, building_id: "steel_mill_bld", requires_blueprint: false, tier: Advanced),
+    (id: "stainless_mill", inputs: [("steel", 2.0), ("chromium", 1.0), ("nickel", 1.0)], outputs: [("stainless_steel", 1.0)], item_outputs: [], craft_time_secs: 2.0, building_id: "steel_mill_bld", requires_blueprint: false, tier: Advanced),
+    (id: "alloy_bronze", inputs: [("copper_ingot", 2.0), ("tin", 1.0)], outputs: [("bronze", 1.0)], item_outputs: [], craft_time_secs: 1.0, building_id: "alloy_forge_bld", requires_blueprint: false, tier: Advanced),
+    (id: "alloy_brass", inputs: [("copper_ingot", 2.0), ("zinc", 1.0)], outputs: [("brass", 1.0)], item_outputs: [], craft_time_secs: 1.0, building_id: "alloy_forge_bld", requires_blueprint: false, tier: Advanced),
+    (id: "alloy_forge", inputs: [("steel", 2.0), ("titanium", 1.0)], outputs: [("alloys", 1.0)], item_outputs: [], craft_time_secs: 0.0, building_id: "alloy_forge_bld", requires_blueprint: false, tier: Advanced),
+    (id: "superalloy_forge", inputs: [("alloys", 2.0), ("cobalt", 1.0), ("chromium", 1.0)], outputs: [("superalloy", 1.0)], item_outputs: [], craft_time_secs: 4.0, building_id: "arc_furnace", requires_blueprint: false, tier: Advanced),
+
+    // ── Material / Component dasar ─────────────────────────────────────────
+    (id: "refine_silicon", inputs: [("silicon_ore", 2.0)], outputs: [("silicon", 1.0)], item_outputs: [], craft_time_secs: 1.0, building_id: "refinery", requires_blueprint: false, tier: Advanced),
+    (id: "make_glass", inputs: [("silicon_ore", 2.0)], outputs: [("glass", 1.0)], item_outputs: [], craft_time_secs: 1.0, building_id: "kiln", requires_blueprint: false, tier: Advanced),
+    (id: "make_ceramic", inputs: [("silicon_ore", 1.0), ("aluminum", 1.0)], outputs: [("ceramic", 1.0)], item_outputs: [], craft_time_secs: 2.0, building_id: "kiln", requires_blueprint: false, tier: Advanced),
+    (id: "draw_wire", inputs: [("copper_ingot", 1.0)], outputs: [("wire", 2.0)], item_outputs: [], craft_time_secs: 0.0, building_id: "assembler", requires_blueprint: false, tier: Advanced),
+    (id: "make_polymer", inputs: [("crude_oil", 2.0)], outputs: [("polymer", 1.0)], item_outputs: [], craft_time_secs: 1.0, building_id: "chem_plant", requires_blueprint: false, tier: Advanced),
+    (id: "make_composite", inputs: [("polymer", 2.0), ("aluminum_ingot", 1.0)], outputs: [("composite", 1.0)], item_outputs: [], craft_time_secs: 2.0, building_id: "assembler", requires_blueprint: false, tier: Advanced),
+    (id: "make_magnet", inputs: [("cobalt", 1.0), ("iron_ingot", 1.0)], outputs: [("magnet", 1.0)], item_outputs: [], craft_time_secs: 2.0, building_id: "assembler", requires_blueprint: false, tier: Advanced),
+    (id: "goods_fab", inputs: [("silicon", 2.0), ("water", 1.0)], outputs: [("consumer_goods", 1.0)], item_outputs: [], craft_time_secs: 0.0, building_id: "assembler", requires_blueprint: false, tier: Advanced),
+
+    // ── Elektronik ─────────────────────────────────────────────────────────
+    (id: "make_circuit", inputs: [("silicon", 1.0), ("wire", 2.0)], outputs: [("circuit", 1.0)], item_outputs: [], craft_time_secs: 2.0, building_id: "electronics_lab", requires_blueprint: false, tier: Advanced),
+    (id: "make_microchip", inputs: [("silicon", 1.0), ("circuit", 1.0)], outputs: [("microchip", 1.0)], item_outputs: [], craft_time_secs: 3.0, building_id: "electronics_lab", requires_blueprint: false, tier: Advanced),
+    (id: "make_capacitor", inputs: [("ceramic", 1.0), ("wire", 2.0)], outputs: [("capacitor", 1.0)], item_outputs: [], craft_time_secs: 2.0, building_id: "electronics_lab", requires_blueprint: false, tier: Advanced),
+    (id: "make_sensor", inputs: [("microchip", 1.0), ("glass", 1.0)], outputs: [("sensor", 1.0)], item_outputs: [], craft_time_secs: 3.0, building_id: "electronics_lab", requires_blueprint: false, tier: Advanced),
+    (id: "make_battery", inputs: [("lithium", 1.0), ("wire", 2.0)], outputs: [("battery", 1.0)], item_outputs: [], craft_time_secs: 2.0, building_id: "chem_plant", requires_blueprint: false, tier: Advanced),
+    (id: "make_motor", inputs: [("magnet", 1.0), ("wire", 2.0), ("steel", 1.0)], outputs: [("motor", 1.0)], item_outputs: [], craft_time_secs: 3.0, building_id: "assembler", requires_blueprint: false, tier: Advanced),
+    (id: "make_fuel_cell", inputs: [("hydrogen", 2.0), ("battery", 1.0)], outputs: [("fuel_cell", 1.0)], item_outputs: [], craft_time_secs: 3.0, building_id: "chem_plant", requires_blueprint: false, tier: Advanced),
+
+    // ── Energy & Gas ───────────────────────────────────────────────────────
+    (id: "electrolysis", inputs: [("water", 2.0)], outputs: [("hydrogen", 2.0), ("oxygen", 1.0)], item_outputs: [], craft_time_secs: 1.0, building_id: "chem_plant", requires_blueprint: false, tier: Basic),
+    (id: "gen_energy_solar", inputs: [("solar_flux", 1.0)], outputs: [("energy", 5.0)], item_outputs: [], craft_time_secs: 0.0, building_id: "solar_collector", requires_blueprint: false, tier: Basic),
+    (id: "gen_energy_fusion", inputs: [("helium3", 1.0), ("deuterium", 1.0)], outputs: [("energy", 50.0)], item_outputs: [], craft_time_secs: 0.0, building_id: "fusion_reactor", requires_blueprint: false, tier: Advanced),
+    (id: "gen_energy_fission", inputs: [("uranium", 1.0)], outputs: [("energy", 80.0)], item_outputs: [], craft_time_secs: 0.0, building_id: "fission_reactor", requires_blueprint: false, tier: Advanced),
+    (id: "refine_deuterium", inputs: [("water", 5.0)], outputs: [("deuterium", 1.0)], item_outputs: [], craft_time_secs: 2.0, building_id: "refinery", requires_blueprint: false, tier: Rare),
+    (id: "refine_tritium", inputs: [("deuterium", 2.0)], outputs: [("tritium", 1.0)], item_outputs: [], craft_time_secs: 3.0, building_id: "fusion_reactor", requires_blueprint: false, tier: Rare),
+
+    // ── Tier 3 / Exotic (butuh blueprint) ──────────────────────────────────
+    (id: "plasma_refinery", inputs: [("exotic_gas", 5.0), ("energy", 2.0)], outputs: [("plasma", 1.0)], item_outputs: [], craft_time_secs: 2.0, building_id: "plasma_refinery_bld", requires_blueprint: true, tier: Rare),
+    (id: "quantum_assembler", inputs: [("silicon", 1.0), ("plasma", 1.0)], outputs: [("quantum_chip", 1.0)], item_outputs: [], craft_time_secs: 3.0, building_id: "quantum_lab", requires_blueprint: true, tier: Rare),
+    (id: "make_superconductor", inputs: [("rare_earth", 1.0), ("helium3", 1.0)], outputs: [("superconductor", 1.0)], item_outputs: [], craft_time_secs: 4.0, building_id: "quantum_lab", requires_blueprint: true, tier: Rare),
+    (id: "make_warp_coil", inputs: [("dilithium", 1.0), ("superconductor", 1.0)], outputs: [("warp_coil", 1.0)], item_outputs: [], craft_time_secs: 5.0, building_id: "quantum_lab", requires_blueprint: true, tier: Rare),
+    (id: "make_nano", inputs: [("quantum_chip", 1.0), ("composite", 1.0)], outputs: [("nano_assembler", 1.0)], item_outputs: [], craft_time_secs: 5.0, building_id: "nano_forge", requires_blueprint: true, tier: Rare),
+    (id: "make_ai_core", inputs: [("quantum_chip", 1.0), ("sensor", 1.0), ("data", 1000.0)], outputs: [("ai_core", 1.0)], item_outputs: [], craft_time_secs: 6.0, building_id: "nano_forge", requires_blueprint: true, tier: Rare),
+    (id: "make_antimatter", inputs: [("energy", 100.0), ("exotic_matter", 1.0)], outputs: [("antimatter", 1.0)], item_outputs: [], craft_time_secs: 8.0, building_id: "antimatter_trap_bld", requires_blueprint: true, tier: Special),
+    (id: "make_void_drill", inputs: [("nano_assembler", 1.0), ("dilithium", 1.0)], outputs: [("void_drill_part", 1.0)], item_outputs: [], craft_time_secs: 6.0, building_id: "nano_forge", requires_blueprint: true, tier: Special),
+
+    // ── Ship Parts (output = item via item_outputs) ────────────────────────
+    (id: "craft_engine_mk1", inputs: [("steel", 5.0), ("motor", 2.0)], outputs: [], item_outputs: [("engine_mk1", 1)], craft_time_secs: 5.0, building_id: "shipyard", requires_blueprint: false, tier: Advanced),
+    (id: "craft_engine_mk2", inputs: [("alloys", 10.0), ("fuel_cell", 2.0)], outputs: [], item_outputs: [("engine_mk2", 1)], craft_time_secs: 10.0, building_id: "shipyard", requires_blueprint: false, tier: Advanced),
+    (id: "craft_engine_mk3", inputs: [("alloys", 20.0), ("plasma", 5.0)], outputs: [], item_outputs: [("engine_mk3", 1)], craft_time_secs: 20.0, building_id: "shipyard", requires_blueprint: false, tier: Rare),
+    (id: "craft_engine_mk4", inputs: [("superalloy", 30.0), ("fuel_cell", 5.0), ("superconductor", 2.0)], outputs: [], item_outputs: [("engine_mk4", 1)], craft_time_secs: 40.0, building_id: "shipyard", requires_blueprint: false, tier: Rare),
+    (id: "craft_engine_mk5", inputs: [("warp_coil", 10.0), ("quantum_chip", 5.0)], outputs: [], item_outputs: [("engine_mk5", 1)], craft_time_secs: 80.0, building_id: "shipyard", requires_blueprint: false, tier: Rare),
+    (id: "craft_cargo_mk2", inputs: [("steel", 15.0), ("composite", 5.0)], outputs: [], item_outputs: [("cargo_mk2", 1)], craft_time_secs: 10.0, building_id: "shipyard", requires_blueprint: false, tier: Advanced),
+    (id: "craft_cargo_mk3", inputs: [("alloys", 20.0), ("composite", 10.0)], outputs: [], item_outputs: [("cargo_mk3", 1)], craft_time_secs: 20.0, building_id: "shipyard", requires_blueprint: false, tier: Rare),
+    (id: "craft_scanner_mk2", inputs: [("sensor", 5.0), ("circuit", 3.0)], outputs: [], item_outputs: [("scanner_mk2", 1)], craft_time_secs: 10.0, building_id: "shipyard", requires_blueprint: false, tier: Advanced),
+    (id: "craft_scanner_mk3", inputs: [("sensor", 5.0), ("quantum_chip", 2.0)], outputs: [], item_outputs: [("scanner_mk3", 1)], craft_time_secs: 20.0, building_id: "shipyard", requires_blueprint: false, tier: Rare),
+    (id: "craft_shield_mk2", inputs: [("stainless_steel", 15.0), ("capacitor", 5.0)], outputs: [], item_outputs: [("shield_mk2", 1)], craft_time_secs: 12.0, building_id: "shipyard", requires_blueprint: false, tier: Advanced),
+    (id: "craft_shield_mk3", inputs: [("superalloy", 20.0), ("superconductor", 5.0)], outputs: [], item_outputs: [("shield_mk3", 1)], craft_time_secs: 25.0, building_id: "shipyard", requires_blueprint: false, tier: Rare),
+    (id: "craft_cloak_mk1", inputs: [("composite", 10.0), ("microchip", 5.0)], outputs: [], item_outputs: [("cloak_mk1", 1)], craft_time_secs: 15.0, building_id: "shipyard", requires_blueprint: false, tier: Advanced),
+]

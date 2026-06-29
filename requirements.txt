@@ -1,0 +1,3 @@
+# Tooling generator asset (scripts/gen_assets.py). Bukan dependency runtime game (Rust).
+numpy>=1.26
+pillow>=10

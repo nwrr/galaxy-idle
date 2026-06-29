@@ -1,0 +1,74 @@
+// data/items.ron — Vec<ItemDef>. Item non-resource (inventory). Katalog: content/11-items.md.
+// kind: ShipPart|Artifact|Consumable|DataCore|Blueprint.
+// effect: ItemEffect. Catatan: enum punya variant `Special(kind, value)` sbg catch-all modifier
+//   artifact/consumable yang belum punya variant khusus (spec `11` mendeskripsikan efek dlm prosa).
+//   Aplikasi modifier konkret di fase tick (M9). value = besaran delta/mult sesuai `kind`.
+[
+    // ── Ship Parts (consume-on-install → set Ship.<part> = level) ───────────
+    (id: "engine_mk1", name: "Chemical Thruster", kind: ShipPart, effect: SetShipPart(part: Engine, level: 1), base_price: 200.0),
+    (id: "engine_mk2", name: "Plasma Drive", kind: ShipPart, effect: SetShipPart(part: Engine, level: 2), base_price: 1200.0),
+    (id: "engine_mk3", name: "Ion Engine Mk III", kind: ShipPart, effect: SetShipPart(part: Engine, level: 3), base_price: 5000.0),
+    (id: "engine_mk4", name: "Fusion Drive", kind: ShipPart, effect: SetShipPart(part: Engine, level: 4), base_price: 20000.0),
+    (id: "engine_mk5", name: "Warp Nacelle", kind: ShipPart, effect: SetShipPart(part: Engine, level: 5), base_price: 80000.0),
+    (id: "cargo_mk1", name: "Cargo Bay I", kind: ShipPart, effect: SetShipPart(part: Cargo, level: 1), base_price: 200.0),
+    (id: "cargo_mk2", name: "Cargo Bay II", kind: ShipPart, effect: SetShipPart(part: Cargo, level: 2), base_price: 1200.0),
+    (id: "cargo_mk3", name: "Expanded Hold", kind: ShipPart, effect: SetShipPart(part: Cargo, level: 3), base_price: 5000.0),
+    (id: "cargo_mk4", name: "Bulk Freighter Hold", kind: ShipPart, effect: SetShipPart(part: Cargo, level: 4), base_price: 20000.0),
+    (id: "cargo_mk5", name: "Dimensional Storage", kind: ShipPart, effect: SetShipPart(part: Cargo, level: 5), base_price: 80000.0),
+    (id: "scanner_mk1", name: "Basic Sensor", kind: ShipPart, effect: SetShipPart(part: Scanner, level: 1), base_price: 250.0),
+    (id: "scanner_mk2", name: "Deep Scanner", kind: ShipPart, effect: SetShipPart(part: Scanner, level: 2), base_price: 1500.0),
+    (id: "scanner_mk3", name: "Quantum Scanner", kind: ShipPart, effect: SetShipPart(part: Scanner, level: 3), base_price: 6000.0),
+    (id: "scanner_mk4", name: "Tachyon Array", kind: ShipPart, effect: SetShipPart(part: Scanner, level: 4), base_price: 24000.0),
+    (id: "scanner_mk5", name: "Omni Sensor", kind: ShipPart, effect: SetShipPart(part: Scanner, level: 5), base_price: 96000.0),
+    (id: "shield_mk1", name: "Hull Plating", kind: ShipPart, effect: SetShipPart(part: Shield, level: 1), base_price: 300.0),
+    (id: "shield_mk2", name: "Deflector Shield", kind: ShipPart, effect: SetShipPart(part: Shield, level: 2), base_price: 1800.0),
+    (id: "shield_mk3", name: "Gravity Plating", kind: ShipPart, effect: SetShipPart(part: Shield, level: 3), base_price: 7000.0),
+    (id: "shield_mk4", name: "Graviton Shield", kind: ShipPart, effect: SetShipPart(part: Shield, level: 4), base_price: 28000.0),
+    (id: "shield_mk5", name: "Singularity Shield", kind: ShipPart, effect: SetShipPart(part: Shield, level: 5), base_price: 110000.0),
+    (id: "cloak_mk1", name: "Stealth Coating", kind: ShipPart, effect: SetShipPart(part: Cloaking, level: 1), base_price: 500.0),
+    (id: "cloak_mk2", name: "Cloaking Field", kind: ShipPart, effect: SetShipPart(part: Cloaking, level: 2), base_price: 3000.0),
+    (id: "cloak_mk3", name: "Phase Cloak", kind: ShipPart, effect: SetShipPart(part: Cloaking, level: 3), base_price: 12000.0),
+    (id: "cloak_mk4", name: "Void Cloak", kind: ShipPart, effect: SetShipPart(part: Cloaking, level: 4), base_price: 48000.0),
+
+    // ── Artifacts (efek permanen selama dimiliki, dari event/salvage) ───────
+    (id: "artifact_void_lens", name: "Void Lens", kind: Artifact, effect: ProductionMult(mult: 1.10, scope: Global), base_price: 50000.0),
+    (id: "artifact_star_compass", name: "Star Compass", kind: Artifact, effect: Special(kind: "scanner_bonus", value: 1.0), base_price: 40000.0),
+    (id: "artifact_ancient_core", name: "Ancient Reactor Core", kind: Artifact, effect: Special(kind: "upkeep_energy_mult", value: -0.20), base_price: 60000.0),
+    (id: "artifact_warp_sigil", name: "Warp Sigil", kind: Artifact, effect: Special(kind: "travel_mult", value: -0.15), base_price: 55000.0),
+    (id: "artifact_gaia_seed", name: "Gaia Seed", kind: Artifact, effect: Special(kind: "slot_terran", value: 1.0), base_price: 70000.0),
+    (id: "artifact_quantum_eye", name: "Quantum Eye", kind: Artifact, effect: Special(kind: "event_loot_quality", value: 0.25), base_price: 45000.0),
+    (id: "artifact_forge_relic", name: "Forge Relic", kind: Artifact, effect: Special(kind: "refinery_speed", value: 0.20), base_price: 50000.0),
+    (id: "artifact_dyson_fragment", name: "Dyson Fragment", kind: Artifact, effect: Special(kind: "solar_mult", value: 2.0), base_price: 90000.0),
+    (id: "artifact_chronos_shard", name: "Chronos Shard", kind: Artifact, effect: Special(kind: "offline_eff", value: 0.10), base_price: 65000.0),
+    (id: "artifact_nebula_heart", name: "Nebula Heart", kind: Artifact, effect: Special(kind: "rare_yield", value: 0.15), base_price: 80000.0),
+    (id: "artifact_singularity_pearl", name: "Singularity Pearl", kind: Artifact, effect: Special(kind: "warp_core_gain", value: 0.10), base_price: 120000.0),
+    (id: "artifact_alien_codex", name: "Alien Codex", kind: Artifact, effect: Special(kind: "research_speed", value: 0.25), base_price: 75000.0),
+
+    // ── Consumables (sekali pakai) ─────────────────────────────────────────
+    (id: "boost_overdrive", name: "Overdrive Chip", kind: Consumable, effect: TempBuff(mult: 2.0, secs: 600.0), base_price: 5000.0),
+    (id: "boost_warp_fuel", name: "Warp Fuel", kind: Consumable, effect: Special(kind: "travel_mult_temp", value: -0.50), base_price: 4000.0),
+    (id: "boost_data_surge", name: "Data Surge", kind: Consumable, effect: DataGain(amount: 50000.0), base_price: 6000.0),
+    (id: "cache_iron", name: "Iron Cache", kind: Consumable, effect: InstantResources([("iron", 10000.0)]), base_price: 800.0),
+    (id: "cache_alloy", name: "Alloy Cache", kind: Consumable, effect: InstantResources([("alloys", 2000.0)]), base_price: 3000.0),
+    (id: "cache_rare", name: "Rare Cache", kind: Consumable, effect: InstantResources([("rare_crystals", 200.0)]), base_price: 8000.0),
+    (id: "repair_kit", name: "Repair Kit", kind: Consumable, effect: Special(kind: "repair_full", value: 0.0), base_price: 2000.0),
+    (id: "scan_pulse", name: "Scan Pulse", kind: Consumable, effect: Special(kind: "reveal_loot", value: 0.0), base_price: 1000.0),
+    (id: "emergency_warp", name: "Emergency Warp", kind: Consumable, effect: Special(kind: "cancel_hazard", value: 0.0), base_price: 3500.0),
+    (id: "credit_voucher", name: "Credit Voucher", kind: Consumable, effect: InstantResources([("credits", 100000.0)]), base_price: 0.0),
+
+    // ── Data Cores (→ Data riset instan) ───────────────────────────────────
+    (id: "datacore_small", name: "Fragmented Data Core", kind: DataCore, effect: DataGain(amount: 5000.0), base_price: 600.0),
+    (id: "datacore_medium", name: "Encrypted Data Core", kind: DataCore, effect: DataGain(amount: 25000.0), base_price: 2500.0),
+    (id: "datacore_large", name: "Quantum Data Core", kind: DataCore, effect: DataGain(amount: 100000.0), base_price: 9000.0),
+    (id: "datacore_alien", name: "Alien Data Vault", kind: DataCore, effect: DataGain(amount: 500000.0), base_price: 40000.0),
+
+    // ── Blueprints (pakai → recipe masuk PrestigeState.blueprints) ──────────
+    (id: "bp_plasma_refinery", name: "Blueprint: Plasma Refinery", kind: Blueprint, effect: UnlockRecipe(recipe: "plasma_refinery"), base_price: 25000.0),
+    (id: "bp_quantum_assembler", name: "Blueprint: Quantum Assembler", kind: Blueprint, effect: UnlockRecipe(recipe: "quantum_assembler"), base_price: 60000.0),
+    (id: "bp_superconductor", name: "Blueprint: Superconductor", kind: Blueprint, effect: UnlockRecipe(recipe: "make_superconductor"), base_price: 45000.0),
+    (id: "bp_warp_coil", name: "Blueprint: Warp Coil", kind: Blueprint, effect: UnlockRecipe(recipe: "make_warp_coil"), base_price: 120000.0),
+    (id: "bp_nano_assembler", name: "Blueprint: Nano Assembler", kind: Blueprint, effect: UnlockRecipe(recipe: "make_nano"), base_price: 150000.0),
+    (id: "bp_ai_core", name: "Blueprint: AI Core", kind: Blueprint, effect: UnlockRecipe(recipe: "make_ai_core"), base_price: 200000.0),
+    (id: "bp_antimatter_trap", name: "Blueprint: Antimatter Trap", kind: Blueprint, effect: UnlockRecipe(recipe: "make_antimatter"), base_price: 180000.0),
+    (id: "bp_void_drill", name: "Blueprint: Void Drill", kind: Blueprint, effect: UnlockRecipe(recipe: "make_void_drill"), base_price: 250000.0),
+]

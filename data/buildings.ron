@@ -1,0 +1,46 @@
+// data/buildings.ron — Vec<BuildingDef>. Katalog: content/13-buildings.md.
+// kind = template BuildingKind: Extractor|Refinery|ResearchLab|Storage|Special (tanpa payload;
+//   beda dari runtime FactoryKind yang membawa node/recipe). base_cost=biaya level 1; cost level n
+//   = base*GROWTH^n. upkeep /detik. recipes = id di recipes.ron (untuk Refinery/penghasil).
+[
+    // ── Extractors (menambang node; recipes umumnya kosong) ────────────────
+    (id: "mining_drill", name: "Mining Drill", min_planet_tier: 1, slot_cost: 1, kind: Extractor, base_cost: [("credits", 50.0)], upkeep: [("energy", 1.0)], recipes: []),
+    (id: "gas_extractor", name: "Gas Extractor", min_planet_tier: 1, slot_cost: 1, kind: Extractor, base_cost: [("credits", 80.0)], upkeep: [("energy", 2.0)], recipes: []),
+    (id: "liquid_pump", name: "Liquid Pump", min_planet_tier: 1, slot_cost: 1, kind: Extractor, base_cost: [("credits", 60.0)], upkeep: [("energy", 1.0)], recipes: []),
+    (id: "crystal_harvester", name: "Crystal Harvester", min_planet_tier: 2, slot_cost: 1, kind: Extractor, base_cost: [("credits", 200.0)], upkeep: [("energy", 3.0)], recipes: []),
+    (id: "deep_core_miner", name: "Deep Core Miner", min_planet_tier: 2, slot_cost: 2, kind: Extractor, base_cost: [("credits", 500.0), ("steel", 50.0)], upkeep: [("energy", 5.0)], recipes: []),
+    (id: "asteroid_harvester", name: "Asteroid Harvester", min_planet_tier: 2, slot_cost: 2, kind: Extractor, base_cost: [("credits", 800.0), ("alloys", 50.0)], upkeep: [("energy", 4.0)], recipes: []),
+    (id: "solar_collector", name: "Solar Collector", min_planet_tier: 1, slot_cost: 1, kind: Extractor, base_cost: [("credits", 120.0)], upkeep: [], recipes: ["gen_energy_solar"]),
+    (id: "void_drill", name: "Void Drill", min_planet_tier: 3, slot_cost: 3, kind: Extractor, base_cost: [("void_drill_part", 1.0)], upkeep: [("energy", 10.0)], recipes: []),
+
+    // ── Refineries / Assemblers ────────────────────────────────────────────
+    (id: "smelter", name: "Smelter", min_planet_tier: 1, slot_cost: 1, kind: Refinery, base_cost: [("credits", 100.0)], upkeep: [("energy", 3.0)], recipes: ["smelt_iron", "smelt_copper", "smelt_aluminum"]),
+    (id: "arc_furnace", name: "Arc Furnace", min_planet_tier: 2, slot_cost: 1, kind: Refinery, base_cost: [("credits", 400.0), ("steel", 30.0)], upkeep: [("energy", 8.0)], recipes: ["smelt_titanium", "superalloy_forge"]),
+    (id: "steel_mill_bld", name: "Steel Mill", min_planet_tier: 1, slot_cost: 1, kind: Refinery, base_cost: [("credits", 200.0)], upkeep: [("energy", 2.0)], recipes: ["steel_mill", "stainless_mill"]),
+    (id: "alloy_forge_bld", name: "Alloy Forge", min_planet_tier: 2, slot_cost: 1, kind: Refinery, base_cost: [("credits", 500.0), ("steel", 20.0)], upkeep: [("energy", 5.0)], recipes: ["alloy_forge", "alloy_bronze", "alloy_brass"]),
+    (id: "refinery", name: "Refinery", min_planet_tier: 1, slot_cost: 1, kind: Refinery, base_cost: [("credits", 150.0)], upkeep: [("energy", 3.0)], recipes: ["refine_silicon", "refine_deuterium"]),
+    (id: "kiln", name: "Kiln", min_planet_tier: 1, slot_cost: 1, kind: Refinery, base_cost: [("credits", 120.0)], upkeep: [("energy", 4.0)], recipes: ["make_glass", "make_ceramic"]),
+    (id: "assembler", name: "Assembler", min_planet_tier: 1, slot_cost: 1, kind: Refinery, base_cost: [("credits", 250.0)], upkeep: [("energy", 3.0)], recipes: ["draw_wire", "make_composite", "make_magnet", "make_motor", "goods_fab"]),
+    (id: "chem_plant", name: "Chemical Plant", min_planet_tier: 2, slot_cost: 1, kind: Refinery, base_cost: [("credits", 400.0)], upkeep: [("energy", 5.0)], recipes: ["make_polymer", "make_battery", "make_fuel_cell", "electrolysis"]),
+    (id: "electronics_lab", name: "Electronics Lab", min_planet_tier: 2, slot_cost: 1, kind: Refinery, base_cost: [("credits", 600.0), ("silicon", 20.0)], upkeep: [("energy", 6.0)], recipes: ["make_circuit", "make_microchip", "make_capacitor", "make_sensor"]),
+    (id: "plasma_refinery_bld", name: "Plasma Refinery", min_planet_tier: 3, slot_cost: 2, kind: Refinery, base_cost: [("credits", 2000.0), ("alloys", 50.0)], upkeep: [("energy", 15.0)], recipes: ["plasma_refinery"]),
+    (id: "quantum_lab", name: "Quantum Lab", min_planet_tier: 3, slot_cost: 2, kind: Refinery, base_cost: [("credits", 5000.0), ("superalloy", 20.0)], upkeep: [("energy", 20.0)], recipes: ["quantum_assembler", "make_superconductor", "make_warp_coil"]),
+    (id: "nano_forge", name: "Nano Forge", min_planet_tier: 3, slot_cost: 3, kind: Refinery, base_cost: [("credits", 10000.0), ("quantum_chip", 10.0)], upkeep: [("energy", 30.0)], recipes: ["make_nano", "make_ai_core", "make_void_drill"]),
+    (id: "antimatter_trap_bld", name: "Antimatter Trap", min_planet_tier: 3, slot_cost: 3, kind: Refinery, base_cost: [("credits", 15000.0), ("ai_core", 5.0)], upkeep: [("energy", 50.0)], recipes: ["make_antimatter"]),
+    (id: "shipyard", name: "Shipyard", min_planet_tier: 2, slot_cost: 2, kind: Refinery, base_cost: [("credits", 1000.0), ("alloys", 50.0)], upkeep: [("energy", 8.0)], recipes: ["craft_engine_mk1", "craft_engine_mk2", "craft_engine_mk3", "craft_engine_mk4", "craft_engine_mk5", "craft_cargo_mk2", "craft_cargo_mk3", "craft_scanner_mk2", "craft_scanner_mk3", "craft_shield_mk2", "craft_shield_mk3", "craft_cloak_mk1"]),
+
+    // ── Power Plants (kind Refinery, upkeep 0 → menghasilkan energy) ────────
+    (id: "fusion_reactor", name: "Fusion Reactor", min_planet_tier: 2, slot_cost: 2, kind: Refinery, base_cost: [("credits", 3000.0), ("alloys", 30.0)], upkeep: [], recipes: ["gen_energy_fusion", "refine_tritium"]),
+    (id: "fission_reactor", name: "Fission Reactor", min_planet_tier: 2, slot_cost: 2, kind: Refinery, base_cost: [("credits", 1500.0), ("steel", 20.0)], upkeep: [], recipes: ["gen_energy_fission"]),
+
+    // ── Research (kind ResearchLab → Data) ─────────────────────────────────
+    (id: "research_lab", name: "Research Lab", min_planet_tier: 1, slot_cost: 1, kind: ResearchLab, base_cost: [("credits", 300.0)], upkeep: [("energy", 5.0)], recipes: []),
+    (id: "quantum_research", name: "Quantum Research Center", min_planet_tier: 3, slot_cost: 2, kind: ResearchLab, base_cost: [("credits", 8000.0), ("ai_core", 5.0)], upkeep: [("energy", 25.0)], recipes: []),
+
+    // ── Storage & Special (modifier; fase khusus tick) ─────────────────────
+    (id: "storage_depot", name: "Storage Depot", min_planet_tier: 1, slot_cost: 1, kind: Storage, base_cost: [("credits", 200.0)], upkeep: [], recipes: []),
+    (id: "warehouse", name: "Warehouse", min_planet_tier: 2, slot_cost: 2, kind: Storage, base_cost: [("credits", 1000.0), ("steel", 20.0)], upkeep: [], recipes: []),
+    (id: "anchor_booster", name: "Anchor Booster", min_planet_tier: 1, slot_cost: 2, kind: Special, base_cost: [("warp_core", 1.0)], upkeep: [("energy", 5.0)], recipes: []),
+    (id: "warp_gate", name: "Warp Gate", min_planet_tier: 3, slot_cost: 3, kind: Special, base_cost: [("credits", 20000.0), ("warp_coil", 10.0)], upkeep: [("energy", 100.0)], recipes: []),
+    (id: "trade_hub", name: "Trade Hub", min_planet_tier: 2, slot_cost: 1, kind: Special, base_cost: [("credits", 800.0)], upkeep: [("energy", 3.0)], recipes: []),
+]

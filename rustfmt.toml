@@ -1,0 +1,2 @@
+# Lihat CONVENTIONS.md §2. Default rustfmt; eksplisit agar konsisten.
+max_width = 100

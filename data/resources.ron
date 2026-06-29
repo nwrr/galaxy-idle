@@ -1,0 +1,115 @@
+// data/resources.ron — Vec<ResourceDef>. Sumber kebenaran semua ResourceId.
+// Skema: abstraction/design/01-data-model.md (ResourceDef). Katalog: content/10-resources.md.
+// tier: Basic|Advanced|Rare|Special ; category: Ore|Ingot|Gas|Liquid|Crystal|Component|Exotic|Data|Currency
+// base_price = Credits/unit. Currency/Data tanpa node (diproduksi building/prestige).
+[
+    // ── Tier 1 Basic — Ores ────────────────────────────────────────────────
+    (id: "iron", name: "Iron", tier: Basic, category: Ore, base_price: 1.0, stackable: true, desc: "Logam dasar, bahan Steel."),
+    (id: "copper", name: "Copper", tier: Basic, category: Ore, base_price: 1.0, stackable: true, desc: "Konduktor; bahan kabel/elektronik."),
+    (id: "aluminum", name: "Aluminum", tier: Basic, category: Ore, base_price: 1.5, stackable: true, desc: "Logam ringan, bahan Alloy."),
+    (id: "nickel", name: "Nickel", tier: Basic, category: Ore, base_price: 2.0, stackable: true, desc: "Bahan baja tahan karat."),
+    (id: "silicon_ore", name: "Silicon Ore", tier: Basic, category: Ore, base_price: 2.0, stackable: true, desc: "Bahan wafer Silicon."),
+    (id: "carbon", name: "Carbon", tier: Basic, category: Ore, base_price: 1.0, stackable: true, desc: "Bahan Steel, polimer."),
+    (id: "sulfur", name: "Sulfur", tier: Basic, category: Ore, base_price: 1.0, stackable: true, desc: "Bahan kimia/asam."),
+    (id: "phosphorus", name: "Phosphorus", tier: Basic, category: Ore, base_price: 1.5, stackable: true, desc: "Bahan agrikultur/kimia."),
+    (id: "magnesium", name: "Magnesium", tier: Basic, category: Ore, base_price: 2.0, stackable: true, desc: "Logam ringan reaktif."),
+    (id: "cobalt", name: "Cobalt", tier: Basic, category: Ore, base_price: 3.0, stackable: true, desc: "Bahan magnet & superalloy."),
+    (id: "manganese", name: "Manganese", tier: Basic, category: Ore, base_price: 2.0, stackable: true, desc: "Aditif baja."),
+    (id: "chromium", name: "Chromium", tier: Basic, category: Ore, base_price: 3.0, stackable: true, desc: "Lapisan anti-korosi."),
+    (id: "tin", name: "Tin", tier: Basic, category: Ore, base_price: 2.0, stackable: true, desc: "Solder, bahan perunggu."),
+    (id: "zinc", name: "Zinc", tier: Basic, category: Ore, base_price: 2.0, stackable: true, desc: "Galvanisasi."),
+    (id: "lead", name: "Lead", tier: Basic, category: Ore, base_price: 1.5, stackable: true, desc: "Perisai radiasi dasar."),
+
+    // ── Tier 1 Basic — Gases ───────────────────────────────────────────────
+    (id: "hydrogen", name: "Hydrogen", tier: Basic, category: Gas, base_price: 1.0, stackable: true, desc: "Bahan bakar fusi dasar."),
+    (id: "oxygen", name: "Oxygen", tier: Basic, category: Gas, base_price: 1.0, stackable: true, desc: "Oksidator, life support."),
+    (id: "nitrogen", name: "Nitrogen", tier: Basic, category: Gas, base_price: 1.0, stackable: true, desc: "Inert, pendingin."),
+    (id: "helium", name: "Helium", tier: Basic, category: Gas, base_price: 2.0, stackable: true, desc: "Pendingin, lifting gas."),
+    (id: "helium3", name: "Helium-3", tier: Basic, category: Gas, base_price: 8.0, stackable: true, desc: "Bahan bakar fusi efisien."),
+    (id: "methane", name: "Methane", tier: Basic, category: Gas, base_price: 1.5, stackable: true, desc: "Bahan bakar, sumber Carbon."),
+    (id: "ammonia", name: "Ammonia", tier: Basic, category: Gas, base_price: 1.5, stackable: true, desc: "Bahan kimia/pendingin."),
+    (id: "co2", name: "Carbon Dioxide", tier: Basic, category: Gas, base_price: 1.0, stackable: true, desc: "Bahan agrikultur tertutup."),
+    (id: "argon", name: "Argon", tier: Basic, category: Gas, base_price: 2.0, stackable: true, desc: "Gas inert industri."),
+    (id: "neon", name: "Neon", tier: Basic, category: Gas, base_price: 3.0, stackable: true, desc: "Pencahayaan, laser."),
+
+    // ── Tier 1 Basic — Liquids ─────────────────────────────────────────────
+    (id: "water", name: "Water", tier: Basic, category: Liquid, base_price: 1.0, stackable: true, desc: "Pendingin, life support, elektrolisis."),
+    (id: "brine", name: "Brine", tier: Basic, category: Liquid, base_price: 1.5, stackable: true, desc: "Sumber garam/mineral terlarut."),
+    (id: "liquid_methane", name: "Liquid Methane", tier: Basic, category: Liquid, base_price: 2.0, stackable: true, desc: "Bahan bakar kriogenik."),
+    (id: "crude_oil", name: "Crude Oil", tier: Basic, category: Liquid, base_price: 2.0, stackable: true, desc: "Bahan polimer/plastik."),
+
+    // ── Tier 1 Basic — Energy & Data ───────────────────────────────────────
+    (id: "energy", name: "Energy", tier: Basic, category: Currency, base_price: 2.0, stackable: true, desc: "Upkeep factory, biaya aksi."),
+    (id: "solar_flux", name: "Solar Flux", tier: Basic, category: Gas, base_price: 1.0, stackable: true, desc: "Energy mentah dari panel surya."),
+    (id: "data", name: "Data", tier: Advanced, category: Data, base_price: 0.0, stackable: true, desc: "Mata uang riset (lihat 03)."),
+    (id: "credits", name: "Credits", tier: Basic, category: Currency, base_price: 1.0, stackable: true, desc: "Soft currency; biaya bangun/upgrade."),
+
+    // ── Tier 2 Advanced — Ingots (crafted) ─────────────────────────────────
+    (id: "iron_ingot", name: "Iron Ingot", tier: Advanced, category: Ingot, base_price: 3.0, stackable: true, desc: "Iron dimurnikan."),
+    (id: "steel", name: "Steel", tier: Advanced, category: Ingot, base_price: 5.0, stackable: true, desc: "Iron + Carbon."),
+    (id: "stainless_steel", name: "Stainless Steel", tier: Advanced, category: Ingot, base_price: 8.0, stackable: true, desc: "Steel + Chromium + Nickel."),
+    (id: "copper_ingot", name: "Copper Ingot", tier: Advanced, category: Ingot, base_price: 3.0, stackable: true, desc: "Konduktor murni."),
+    (id: "aluminum_ingot", name: "Aluminum Ingot", tier: Advanced, category: Ingot, base_price: 4.0, stackable: true, desc: "Logam ringan murni."),
+    (id: "titanium", name: "Titanium", tier: Advanced, category: Ingot, base_price: 8.0, stackable: true, desc: "Logam kuat-ringan."),
+    (id: "bronze", name: "Bronze", tier: Advanced, category: Ingot, base_price: 4.0, stackable: true, desc: "Copper + Tin."),
+    (id: "brass", name: "Brass", tier: Advanced, category: Ingot, base_price: 4.0, stackable: true, desc: "Copper + Zinc."),
+    (id: "alloys", name: "Alloys", tier: Advanced, category: Ingot, base_price: 8.0, stackable: true, desc: "Steel + Titanium (struktur kapal)."),
+    (id: "superalloy", name: "Superalloy", tier: Advanced, category: Ingot, base_price: 15.0, stackable: true, desc: "Alloys + Cobalt + Chromium."),
+
+    // ── Tier 2 Advanced — Components (crafted) ─────────────────────────────
+    (id: "silicon", name: "Silicon Wafer", tier: Advanced, category: Component, base_price: 5.0, stackable: true, desc: "Dari Silicon Ore."),
+    (id: "glass", name: "Glass", tier: Advanced, category: Component, base_price: 3.0, stackable: true, desc: "Silica → kaca."),
+    (id: "wire", name: "Copper Wire", tier: Advanced, category: Component, base_price: 4.0, stackable: true, desc: "Copper Ingot → kabel."),
+    (id: "circuit", name: "Circuit Board", tier: Advanced, category: Component, base_price: 10.0, stackable: true, desc: "Silicon + Wire."),
+    (id: "microchip", name: "Microchip", tier: Advanced, category: Component, base_price: 18.0, stackable: true, desc: "Silicon + Circuit."),
+    (id: "polymer", name: "Polymer", tier: Advanced, category: Component, base_price: 4.0, stackable: true, desc: "Crude Oil → plastik."),
+    (id: "composite", name: "Composite Panel", tier: Advanced, category: Component, base_price: 12.0, stackable: true, desc: "Polymer + Aluminum."),
+    (id: "ceramic", name: "Ceramic", tier: Advanced, category: Component, base_price: 6.0, stackable: true, desc: "Silica + heat; tahan panas."),
+    (id: "battery", name: "Battery", tier: Advanced, category: Component, base_price: 14.0, stackable: true, desc: "Lithium + Wire."),
+    (id: "capacitor", name: "Capacitor", tier: Advanced, category: Component, base_price: 12.0, stackable: true, desc: "Ceramic + Wire."),
+    (id: "magnet", name: "Magnet", tier: Advanced, category: Component, base_price: 10.0, stackable: true, desc: "Cobalt + Iron."),
+    (id: "motor", name: "Electric Motor", tier: Advanced, category: Component, base_price: 22.0, stackable: true, desc: "Magnet + Wire + Steel."),
+    (id: "sensor", name: "Sensor Module", tier: Advanced, category: Component, base_price: 25.0, stackable: true, desc: "Microchip + Glass."),
+    (id: "fuel_cell", name: "Fuel Cell", tier: Advanced, category: Component, base_price: 20.0, stackable: true, desc: "Hydrogen + Battery."),
+    (id: "consumer_goods", name: "Consumer Goods", tier: Advanced, category: Component, base_price: 8.0, stackable: true, desc: "Polimer + Silicon (upkeep pop)."),
+
+    // ── Tier 2 Advanced — Mineral / Crystal ────────────────────────────────
+    (id: "lithium", name: "Lithium", tier: Advanced, category: Crystal, base_price: 6.0, stackable: true, desc: "Bahan baterai."),
+    (id: "quartz", name: "Quartz", tier: Advanced, category: Crystal, base_price: 4.0, stackable: true, desc: "Optik, osilator."),
+    (id: "rare_earth", name: "Rare Earth Elements", tier: Advanced, category: Crystal, base_price: 12.0, stackable: true, desc: "Magnet kuat, elektronik."),
+    (id: "uranium", name: "Uranium", tier: Advanced, category: Crystal, base_price: 20.0, stackable: true, desc: "Bahan reaktor fisi."),
+    (id: "thorium", name: "Thorium", tier: Advanced, category: Crystal, base_price: 18.0, stackable: true, desc: "Bahan bakar reaktor alternatif."),
+
+    // ── Tier 3 Rare — Gas & Exotic ─────────────────────────────────────────
+    (id: "exotic_gas", name: "Exotic Gas", tier: Rare, category: Gas, base_price: 25.0, stackable: true, desc: "Bahan Plasma & refinery lanjut."),
+    (id: "xenon", name: "Xenon", tier: Rare, category: Gas, base_price: 22.0, stackable: true, desc: "Propelan ion-drive."),
+    (id: "tritium", name: "Tritium", tier: Rare, category: Gas, base_price: 30.0, stackable: true, desc: "Bahan bakar fusi tinggi."),
+    (id: "deuterium", name: "Deuterium", tier: Rare, category: Gas, base_price: 18.0, stackable: true, desc: "Bahan bakar fusi."),
+    (id: "plasma", name: "Plasma", tier: Rare, category: Exotic, base_price: 40.0, stackable: true, desc: "Bahan komponen tinggi (blueprint)."),
+
+    // ── Tier 3 Rare — Crystal & Rare metals ────────────────────────────────
+    (id: "rare_crystals", name: "Rare Crystals", tier: Rare, category: Crystal, base_price: 50.0, stackable: true, desc: "Optik kuantum, riset."),
+    (id: "dilithium", name: "Dilithium", tier: Rare, category: Crystal, base_price: 60.0, stackable: true, desc: "Stabilisator warp."),
+    (id: "iridium", name: "Iridium", tier: Rare, category: Ore, base_price: 45.0, stackable: true, desc: "Katalis & elektroda."),
+    (id: "platinum", name: "Platinum", tier: Rare, category: Ore, base_price: 40.0, stackable: true, desc: "Katalis presisi."),
+    (id: "palladium", name: "Palladium", tier: Rare, category: Ore, base_price: 38.0, stackable: true, desc: "Penyimpan hidrogen."),
+    (id: "gold", name: "Gold", tier: Rare, category: Ore, base_price: 35.0, stackable: true, desc: "Konduktor presisi."),
+
+    // ── Tier 3 Rare — Komponen tingkat tinggi ──────────────────────────────
+    (id: "quantum_chip", name: "Quantum Chip", tier: Rare, category: Component, base_price: 80.0, stackable: true, desc: "Silicon + Plasma (blueprint)."),
+    (id: "superconductor", name: "Superconductor", tier: Rare, category: Component, base_price: 70.0, stackable: true, desc: "Rare Earth + Helium-3."),
+    (id: "warp_coil", name: "Warp Coil", tier: Rare, category: Component, base_price: 120.0, stackable: true, desc: "Dilithium + Superconductor."),
+    (id: "nano_assembler", name: "Nano Assembler", tier: Rare, category: Component, base_price: 150.0, stackable: true, desc: "Quantum Chip + Composite."),
+    (id: "ai_core", name: "AI Core", tier: Rare, category: Component, base_price: 200.0, stackable: true, desc: "Quantum Chip + Sensor + Data."),
+
+    // ── Tier Special / Prestige ────────────────────────────────────────────
+    (id: "antimatter", name: "Antimatter", tier: Special, category: Exotic, base_price: 50.0, stackable: true, desc: "Mata uang Merchant, bahan endgame."),
+    (id: "dark_matter", name: "Dark Matter", tier: Special, category: Exotic, base_price: 100.0, stackable: true, desc: "Bahan upgrade prestige."),
+    (id: "dark_energy", name: "Dark Energy", tier: Special, category: Exotic, base_price: 120.0, stackable: true, desc: "Bahan ascension."),
+    (id: "singularity_matter", name: "Singularity Matter", tier: Special, category: Exotic, base_price: 500.0, stackable: true, desc: "Ultra-rare, upgrade prestige."),
+    (id: "exotic_matter", name: "Exotic Matter", tier: Special, category: Exotic, base_price: 150.0, stackable: true, desc: "Stabilkan wormhole."),
+    (id: "void_essence", name: "Void Essence", tier: Special, category: Exotic, base_price: 200.0, stackable: true, desc: "Blueprint eksklusif."),
+    (id: "void_drill_part", name: "Void Drill Component", tier: Special, category: Component, base_price: 300.0, stackable: false, desc: "Komponen untuk Void Drill (13)."),
+    (id: "warp_core", name: "Warp Core", tier: Special, category: Currency, base_price: 0.0, stackable: true, desc: "Mata uang prestige (Warp Jump, lihat 04)."),
+    (id: "stellar_core", name: "Stellar Core", tier: Special, category: Currency, base_price: 0.0, stackable: true, desc: "Currency ascension lanjut (endgame)."),
+]

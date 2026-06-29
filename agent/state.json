@@ -1,0 +1,14 @@
+{
+  "iter": 18,
+  "milestone": "M5",
+  "current_item": "game/research.rs: Data/sec, alokasi ke tech node, completion",
+  "last_verify": "HIJAU",
+  "last_snapshot": "planet_view_80x30",
+  "failing_checks": [],
+  "blocker": null,
+  "done_criteria": {
+    "G1": false, "G2": false, "G3": false, "G4": false, "G5": false,
+    "G6": false, "G7": false, "G8": true, "G9": false, "G10": false
+  },
+  "updated_unix": 1751156220
+}

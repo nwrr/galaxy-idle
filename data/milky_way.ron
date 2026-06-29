@@ -1,0 +1,66 @@
+// data/milky_way.ron — Sol System handcrafted (GalaxyKind::Fixed, level 0, Anchor).
+// Skema body = Planet seed dari abstraction/content/09-milky-way.md (lihat §Skema entri).
+// Semua `resource` node = id di data/resources.ron. unlock_req: None | WarpTier(n).
+// tier: u8 (1..=3); sun = 0 (bintang, bukan planet-tier). richness 0.5..=2.0.
+(
+    id: "milky_way",
+    name: "Milky Way — Sol System",
+    bodies: [
+        // ── Inner System ──────────────────────────────────────────────────
+        (id: "sun", name: "Sol (Star)", tier: 0, biome: LavaWorld, distance: 0.0, slots: 2, unlock_req: WarpTier(4),
+         nodes: [(resource: "solar_flux", richness: 2.0), (resource: "hydrogen", richness: 2.0), (resource: "helium", richness: 1.5)], moons: []),
+        (id: "mercury", name: "Mercury", tier: 1, biome: DeadWorld, distance: 0.4, slots: 3, unlock_req: WarpTier(2),
+         nodes: [(resource: "iron", richness: 1.8), (resource: "nickel", richness: 1.2), (resource: "sulfur", richness: 1.0)], moons: []),
+        (id: "venus", name: "Venus", tier: 2, biome: LavaWorld, distance: 0.7, slots: 4, unlock_req: WarpTier(3),
+         nodes: [(resource: "co2", richness: 2.0), (resource: "sulfur", richness: 1.8), (resource: "nitrogen", richness: 1.2)], moons: []),
+        (id: "earth", name: "Earth", tier: 1, biome: Terran, distance: 1.0, slots: 6, unlock_req: None,
+         nodes: [(resource: "iron", richness: 1.5), (resource: "carbon", richness: 1.2), (resource: "water", richness: 2.0),
+                 (resource: "copper", richness: 1.0), (resource: "oxygen", richness: 1.5), (resource: "silicon_ore", richness: 0.8)], moons: ["luna"]),
+        (id: "luna", name: "Luna (Moon)", tier: 1, biome: DeadWorld, distance: 1.0, slots: 3, unlock_req: WarpTier(1),
+         nodes: [(resource: "iron", richness: 1.0), (resource: "helium3", richness: 1.5), (resource: "aluminum", richness: 1.0)], moons: []),
+        (id: "mars", name: "Mars", tier: 2, biome: IronWorld, distance: 1.5, slots: 5, unlock_req: WarpTier(2),
+         nodes: [(resource: "iron", richness: 2.0), (resource: "aluminum", richness: 1.5), (resource: "silicon_ore", richness: 1.2), (resource: "water", richness: 0.6)], moons: ["phobos", "deimos"]),
+        (id: "phobos", name: "Phobos", tier: 1, biome: AsteroidBelt, distance: 1.5, slots: 2, unlock_req: WarpTier(2),
+         nodes: [(resource: "nickel", richness: 1.5), (resource: "cobalt", richness: 1.0)], moons: []),
+        (id: "deimos", name: "Deimos", tier: 1, biome: AsteroidBelt, distance: 1.6, slots: 2, unlock_req: WarpTier(2),
+         nodes: [(resource: "iron", richness: 1.2), (resource: "carbon", richness: 1.0)], moons: []),
+
+        // ── Asteroid Belt ─────────────────────────────────────────────────
+        (id: "asteroid_belt", name: "Asteroid Belt", tier: 2, biome: AsteroidBelt, distance: 2.7, slots: 4, unlock_req: WarpTier(3),
+         nodes: [(resource: "iron", richness: 1.5), (resource: "nickel", richness: 1.5), (resource: "platinum", richness: 0.8), (resource: "iridium", richness: 0.6), (resource: "gold", richness: 0.5)], moons: []),
+        (id: "ceres", name: "Ceres (Dwarf)", tier: 2, biome: IceWorld, distance: 2.8, slots: 3, unlock_req: WarpTier(3),
+         nodes: [(resource: "water", richness: 1.8), (resource: "ammonia", richness: 1.2), (resource: "rare_earth", richness: 0.7)], moons: []),
+
+        // ── Outer System (Gas Giants + Moons) ─────────────────────────────
+        (id: "jupiter", name: "Jupiter", tier: 2, biome: GasGiant, distance: 5.2, slots: 5, unlock_req: WarpTier(3),
+         nodes: [(resource: "hydrogen", richness: 2.0), (resource: "helium", richness: 2.0), (resource: "helium3", richness: 1.2), (resource: "methane", richness: 1.0)], moons: ["io", "europa", "ganymede", "callisto"]),
+        (id: "io", name: "Io", tier: 2, biome: LavaWorld, distance: 5.2, slots: 3, unlock_req: WarpTier(4),
+         nodes: [(resource: "sulfur", richness: 2.0), (resource: "iron", richness: 1.0)], moons: []),
+        (id: "europa", name: "Europa", tier: 2, biome: IceWorld, distance: 5.2, slots: 3, unlock_req: WarpTier(4),
+         nodes: [(resource: "water", richness: 2.0), (resource: "deuterium", richness: 1.0), (resource: "oxygen", richness: 1.2)], moons: []),
+        (id: "ganymede", name: "Ganymede", tier: 2, biome: IceWorld, distance: 5.2, slots: 4, unlock_req: WarpTier(4),
+         nodes: [(resource: "water", richness: 1.5), (resource: "silicon_ore", richness: 1.2), (resource: "magnesium", richness: 1.0)], moons: []),
+        (id: "callisto", name: "Callisto", tier: 2, biome: DeadWorld, distance: 5.2, slots: 3, unlock_req: WarpTier(4),
+         nodes: [(resource: "iron", richness: 1.2), (resource: "co2", richness: 1.0), (resource: "ammonia", richness: 1.0)], moons: []),
+        (id: "saturn", name: "Saturn", tier: 3, biome: GasGiant, distance: 9.5, slots: 5, unlock_req: WarpTier(5),
+         nodes: [(resource: "hydrogen", richness: 2.0), (resource: "helium3", richness: 1.8), (resource: "exotic_gas", richness: 0.8), (resource: "methane", richness: 1.2)], moons: ["titan", "enceladus"]),
+        (id: "titan", name: "Titan", tier: 3, biome: OceanPlanet, distance: 9.5, slots: 4, unlock_req: WarpTier(5),
+         nodes: [(resource: "liquid_methane", richness: 2.0), (resource: "methane", richness: 1.5), (resource: "nitrogen", richness: 1.5)], moons: []),
+        (id: "enceladus", name: "Enceladus", tier: 3, biome: IceWorld, distance: 9.5, slots: 3, unlock_req: WarpTier(5),
+         nodes: [(resource: "water", richness: 2.0), (resource: "deuterium", richness: 1.2), (resource: "brine", richness: 1.0)], moons: []),
+        (id: "uranus", name: "Uranus", tier: 3, biome: GasGiant, distance: 19.2, slots: 4, unlock_req: WarpTier(5),
+         nodes: [(resource: "hydrogen", richness: 1.8), (resource: "helium", richness: 1.8), (resource: "methane", richness: 2.0), (resource: "exotic_gas", richness: 1.0)], moons: ["titania"]),
+        (id: "titania", name: "Titania", tier: 3, biome: IceWorld, distance: 19.2, slots: 3, unlock_req: WarpTier(5),
+         nodes: [(resource: "water", richness: 1.5), (resource: "rare_earth", richness: 0.8), (resource: "quartz", richness: 0.8)], moons: []),
+        (id: "neptune", name: "Neptune", tier: 3, biome: GasGiant, distance: 30.1, slots: 4, unlock_req: WarpTier(5),
+         nodes: [(resource: "hydrogen", richness: 1.8), (resource: "helium3", richness: 2.0), (resource: "exotic_gas", richness: 1.2)], moons: ["triton"]),
+        (id: "triton", name: "Triton", tier: 3, biome: IceWorld, distance: 30.1, slots: 3, unlock_req: WarpTier(5),
+         nodes: [(resource: "nitrogen", richness: 1.8), (resource: "liquid_methane", richness: 1.5), (resource: "deuterium", richness: 1.2)], moons: []),
+
+        // ── Kuiper Belt / Edge (gateway ProcGen) ──────────────────────────
+        (id: "pluto", name: "Pluto (Dwarf)", tier: 3, biome: IceWorld, distance: 39.5, slots: 3, unlock_req: WarpTier(5),
+         nodes: [(resource: "water", richness: 1.2), (resource: "liquid_methane", richness: 1.5), (resource: "xenon", richness: 0.6)], moons: []),
+        (id: "kuiper_belt", name: "Kuiper Belt", tier: 3, biome: AsteroidBelt, distance: 45.0, slots: 4, unlock_req: WarpTier(5),
+         nodes: [(resource: "xenon", richness: 1.0), (resource: "iridium", richness: 0.8), (resource: "rare_crystals", richness: 0.5), (resource: "exotic_matter", richness: 0.3)], moons: []),
+    ],
+)

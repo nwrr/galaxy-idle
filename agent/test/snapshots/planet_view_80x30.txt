@@ -1,0 +1,30 @@
+┌ STELLAR IDLE ────────────────────────────────────────────────────────────────┐
+│┌─────────────┐┌─────────────────────────────────────────────────────────────┐│
+││MENU         ││EARTH - Sector 001 (Lvl 1)                                   ││
+││► Galaxy Map ││                                                             ││
+││  Planets    ││RESOURCE NODES (3): Iron L4  Carbon L2  Water L3             ││
+││   * Earth   ││FACTORIES (4): [Mining Drill L4] [Steel Mill L2] [Empty] [Res││
+││   o Mars    ││SHIP: WarpTier 3 | Engine L2 Cargo L1 Scanner L0             ││
+││   o Jupiter ││RESEARCH: +10 Data/s                                         ││
+││  Fleet      ││Status: Idle                                                 ││
+││  Research   ││                                                             ││
+││  Merchant   ││[1]Node [2]Upgrade [3]Factory [4]Lab [5]Ship                 ││
+││  Settings   ││                                                             ││
+││  Save       ││                                                             ││
+││             ││                                                             ││
+││             ││                                                             ││
+││             ││                                                             ││
+││             ││                                                             ││
+││             ││                                                             ││
+││             ││                                                             ││
+││             ││                                                             ││
+││             ││                                                             ││
+│└─────────────┘│                                                             ││
+│┌─────────────┐│                                                             ││
+││SHORTCUTS    ││                                                             ││
+││g:Galaxy     ││                                                             ││
+││p:Planet     ││                                                             ││
+││r:Research   ││                                                             ││
+││m:Merchant   ││                                                             ││
+│└─────────────┘└─────────────────────────────────────────────────────────────┘│
+└──────────────────────────────────────────────────────────────────────────────┘

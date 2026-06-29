@@ -1,0 +1,14 @@
+// data/tech_tree.ron — Vec<TechDef>. Tech tree statis (bukan state). Sumber: 08-balancing.md §Research
+// + 03-progression.md §5. State hanya simpan `completed` + `active`.
+// branch: Extraction|Manufacturing|Aerospace|AstroCartography.
+// unlock: Recipe(id) | WarpTier(n) | UnlockBuilding(id) | TechMult(resources, add) | AccessOuterTier(n).
+// depends_on = id tech prasyarat (harus completed dulu).
+[
+    (id: "manu_steel", branch: Manufacturing, data_cost: 500.0, time_secs: 120.0, depends_on: [], unlock: Recipe("steel_mill")),
+    (id: "manu_titanium", branch: Manufacturing, data_cost: 2000.0, time_secs: 300.0, depends_on: ["manu_steel"], unlock: Recipe("alloy_forge")),
+    (id: "ext_deep_core", branch: Extraction, data_cost: 8000.0, time_secs: 1200.0, depends_on: ["manu_steel"], unlock: UnlockBuilding("deep_core_miner")),
+    (id: "ext_efficiency", branch: Extraction, data_cost: 4000.0, time_secs: 600.0, depends_on: [], unlock: TechMult(resources: ["iron", "carbon"], add: 0.25)),
+    (id: "aero_warp_mk2", branch: Aerospace, data_cost: 5000.0, time_secs: 600.0, depends_on: ["manu_titanium"], unlock: WarpTier(6)),
+    (id: "aero_warp_mk3", branch: Aerospace, data_cost: 25000.0, time_secs: 1800.0, depends_on: ["aero_warp_mk2"], unlock: WarpTier(10)),
+    (id: "astro_far_warp", branch: AstroCartography, data_cost: 20000.0, time_secs: 2400.0, depends_on: ["aero_warp_mk2"], unlock: AccessOuterTier(2)),
+]
