@@ -29,6 +29,14 @@ pub struct App {
     pub view: String,
     /// Indeks terpilih dalam list view aktif (mis. slot factory di planet_view).
     pub sel: usize,
+    /// Bidang bintang galaksi spiral menu (kosmetik, read-only).
+    pub anim: crate::ui::galaxy_anim::GalaxyAnim,
+    /// Waktu animasi (detik) sejak masuk menu; `0.0` saat snapshot deterministik.
+    pub anim_secs: f64,
+    /// Sistem partikel kosmetik (engine exhaust saat Traveling, dll).
+    pub particles: crate::ui::particles::ParticleSystem,
+    /// Indeks emitter engine-exhaust di `particles`.
+    pub exhaust_idx: usize,
 }
 
 impl App {
@@ -109,6 +117,7 @@ impl App {
             name: "Earth".into(),
             tier: 1,
             biome: Biome::Terran,
+            distance: 1.0,
             unlocked: true,
             unlock_req: UnlockReq::None,
             nodes,
@@ -122,27 +131,60 @@ impl App {
             tick: 0,
             credits: 0.0,
             inventory: std::collections::HashMap::new(),
-            galaxies: vec![crate::game::state::Galaxy {
-                id: GalaxyId(0),
-                name: "Milky Way".into(),
-                level: 0,
-                kind: crate::game::state::GalaxyKind::Fixed,
-                planets: vec![earth],
-            }],
+            galaxies: vec![
+                crate::game::state::Galaxy {
+                    id: GalaxyId(0),
+                    name: "Milky Way".into(),
+                    level: 0,
+                    kind: crate::game::state::GalaxyKind::Fixed,
+                    planets: vec![earth],
+                },
+                // Sektor frontier ProcGen (Lvl 1) untuk demo Galaxy Map — deterministik dari seed.
+                {
+                    let seed = crate::game::world::procgen::galaxy_seed(0xA17, 1, 0);
+                    crate::game::state::Galaxy {
+                        id: GalaxyId(1),
+                        name: crate::game::world::procgen::galaxy_name(seed),
+                        level: 1,
+                        kind: crate::game::state::GalaxyKind::Procedural {
+                            seed,
+                            visited: Default::default(),
+                        },
+                        planets: vec![],
+                    }
+                },
+            ],
             active_galaxy: GalaxyId(0),
             anchor_galaxy: GalaxyId(0),
             ship,
-            research: Default::default(),
+            // Demo: riset aktif manu_steel ~60% (Data 300/500, 72/120s) untuk snapshot research.
+            research: crate::game::state::ResearchState {
+                data: 50.0,
+                completed: Default::default(),
+                active: Some(crate::game::state::ActiveResearch {
+                    tech_id: "manu_steel".into(),
+                    data_invested: 300.0,
+                    elapsed_secs: 72.0,
+                }),
+            },
             prestige: Default::default(),
             merchant: Default::default(),
             events: Default::default(),
             settings: Default::default(),
         };
+        let mut particles = crate::ui::particles::ParticleSystem::new(0x009A_12E5);
+        let mut exhaust = crate::ui::particles::Emitter::exhaust((0.5, 0.6));
+        exhaust.enabled = false; // hanya aktif saat Traveling (di event loop)
+        let exhaust_idx = particles.add_emitter(exhaust);
         App {
             state,
             content,
             view: "main_menu".into(),
             sel: 0,
+            anim: crate::ui::galaxy_anim::GalaxyAnim::default_field(),
+            anim_secs: 0.0,
+            particles,
+            exhaust_idx,
         }
     }
 
@@ -173,6 +215,40 @@ impl App {
         }
         if self.view == "planet_view" {
             self.planet_keys(code);
+        } else if self.view == "galaxy_map" {
+            self.galaxy_map_keys(code);
+        }
+    }
+
+    /// Navigasi & aksi Galaxy Map: j/k pilih planet, s = scan/materialisasi planet terpilih.
+    fn galaxy_map_keys(&mut self, code: KeyCode) {
+        let Some(fg) = crate::ui::panels::galaxy_map::frontier(self) else {
+            return;
+        };
+        let count = match &fg.kind {
+            crate::game::state::GalaxyKind::Procedural { seed, .. } => {
+                crate::game::world::procgen::planet_count(*seed)
+            }
+            crate::game::state::GalaxyKind::Fixed => fg.planets.len() as u32,
+        };
+        let fid = fg.id;
+        match code {
+            KeyCode::Char('j') | KeyCode::Down => {
+                self.sel = (self.sel + 1).min(count.saturating_sub(1) as usize);
+            }
+            KeyCode::Char('k') | KeyCode::Up => {
+                self.sel = self.sel.saturating_sub(1);
+            }
+            KeyCode::Char('s') => {
+                if let Some(g) = self.state.galaxies.iter_mut().find(|g| g.id == fid) {
+                    crate::game::world::procgen::materialize_planet(
+                        g,
+                        self.sel as u32,
+                        &self.content,
+                    );
+                }
+            }
+            _ => {}
         }
     }
 
@@ -238,6 +314,7 @@ fn event_loop<B: ratatui::backend::Backend>(
     let tick = Duration::from_secs_f64(TICK_DURATION_SECS);
     let render_interval = Duration::from_millis(RENDER_INTERVAL_MS);
     let mut accumulated = Duration::ZERO;
+    let start = Instant::now();
     let mut last = Instant::now();
     let mut last_render = Instant::now() - render_interval;
 
@@ -269,6 +346,15 @@ fn event_loop<B: ratatui::backend::Backend>(
         }
 
         if now - last_render >= render_interval {
+            app.anim_secs = (now - start).as_secs_f64();
+            // Engine exhaust aktif saat ship Traveling; update partikel dgn dt nyata.
+            let traveling = matches!(
+                app.state.ship.status,
+                crate::game::state::ShipStatus::Traveling { .. }
+            );
+            app.particles
+                .set_emitter(app.exhaust_idx, traveling, (0.5, 0.6));
+            app.particles.update((now - last_render).as_secs_f32());
             let view = app.view.clone();
             term.draw(|f| crate::ui::draw_view(f, app, &view))?;
             last_render = now;

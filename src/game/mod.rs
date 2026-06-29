@@ -7,4 +7,8 @@ pub mod actions;
 pub mod defs;
 pub mod economy;
 pub mod events;
+pub mod prestige;
+pub mod research;
+pub mod ship;
 pub mod state;
+pub mod world;

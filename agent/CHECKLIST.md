@@ -38,35 +38,35 @@ Spec acuan di kolom terakhir → file `abstraction/`.
 - [x] Snapshot `planet_view_80x30` cocok
 
 ## M5 — Research
-- [ ] `game/research.rs`: Data/sec, alokasi ke tech node, completion — `03`
-- [ ] Tech tree dari `data/tech_tree.ron`, efek (Warp Tier ↑, recipe/multiplier) — `03`
-- [ ] UI research terminal (available/current + progress bar) — `03`,`06`
+- [x] `game/research.rs`: Data/sec, alokasi ke tech node, completion — `03`
+- [x] Tech tree dari `data/tech_tree.ron`, efek (Warp Tier ↑, recipe/multiplier) — `03`
+- [x] UI research terminal (available/current + progress bar) — `03`,`06`
 
 ## M6 — Ship & Travel
-- [ ] `game/ship.rs`: warp tier gatekeeping, part buff (engine/cargo/scanner) — `03`
-- [ ] Travel time + unlock body Sol system; status Traveling di UI — `03`,`09`
+- [x] `game/ship.rs`: warp tier gatekeeping, part buff (engine/cargo/scanner) — `03`
+- [x] Travel time + unlock body Sol system; status Traveling di UI — `03`,`09`
 
 ## M7 — Save / Offline
-- [ ] `save/mod.rs`: write atomic JSON (XDG), read, id↔string, migrasi versi — `07`
-- [ ] `sim/offline.rs`: time-delta batch, cap, efisiensi — `07`
-- [ ] Test round-trip: save→load identik; offline progress masuk akal
+- [x] `save/mod.rs`: write atomic JSON (XDG), read, id↔string, migrasi versi — `07`
+- [x] `sim/offline.rs`: time-delta batch, cap, efisiensi — `07`
+- [x] Test round-trip: save→load identik; offline progress masuk akal
 
 ## M8 — Prestige
-- [ ] `game/prestige.rs`: warp jump (reset galaksi aktif, simpan prestige/anchor), Warp Core calc — `04`
-- [ ] Anchor feed Milky Way → galaksi aktif; permanent upgrade — `04`
-- [ ] UI Warp Navigation + konfirmasi — `04`,`06`
+- [x] `game/prestige.rs`: warp jump (reset galaksi aktif, simpan prestige/anchor), Warp Core calc — `04`
+- [x] Anchor feed Milky Way → galaksi aktif; permanent upgrade — `04`
+- [x] UI Warp Navigation + konfirmasi — `04`,`06`
 
 ## M9 — ProcGen + Polish
-- [ ] `game/procgen.rs`: generate galaxy/planet deterministik dari seed — `16`
-- [ ] Galaxy Map view (planet list ProcGen, scan/send) — `06`,`16`
-- [ ] `ui/galaxy_anim.rs`: animasi spiral menu utama — `14`
-- [ ] `ui/particles.rs`: particle dasar (engine exhaust / warp trail) — `15`
-- [ ] `ui/portrait.rs`: render portrait karakter PNG via `ratatui-image` (Picker + StatefulImage, cache per id, fallback half-block) — `07`,`06`
-- [ ] `ui/sprite.rs`: muat sprite celestial `.ans` half-block berwarna (parse via `ansi-to-tui`); pilih ukuran sm/md/lg per panel + depth tc/256/16 per kapabilitas terminal — `07`,`06`
-- [ ] Responsive penuh 3 breakpoint; snapshot tiap ukuran cocok — `06`
-- [ ] Void Merchant + event dasar (queue, resolusi) — `05`,`04`
+- [x] `game/procgen.rs`: generate galaxy/planet deterministik dari seed — `16`
+- [x] Galaxy Map view (planet list ProcGen, scan/send) — `06`,`16`
+- [x] `ui/galaxy_anim.rs`: animasi spiral menu utama — `14`
+- [x] `ui/particles.rs`: particle dasar (engine exhaust / warp trail) — `15`
+- [x] `ui/portrait.rs`: render portrait karakter PNG via `ratatui-image` (Picker + StatefulImage, cache per id, fallback half-block) — `07`,`06`
+- [x] `ui/sprite.rs`: muat sprite celestial `.ans` half-block berwarna (parse via `ansi-to-tui`); pilih ukuran sm/md/lg per panel + depth tc/256/16 per kapabilitas terminal — `07`,`06`
+- [x] Responsive penuh 3 breakpoint; snapshot tiap ukuran cocok — `06`
+- [x] Void Merchant + event dasar (queue, resolusi) — `05`,`04`
 
 ## Goal Gate
-- [ ] Semua DoD di [`GOALS.md`](GOALS.md) (G1–G10) ✅
-- [ ] `scripts/verify.sh` hijau penuh
-- [ ] `PROGRESS.md` ditutup dengan ringkasan rilis
+- [x] Semua DoD di [`GOALS.md`](GOALS.md) (G1–G10) ✅
+- [x] `scripts/verify.sh` hijau penuh
+- [x] `PROGRESS.md` ditutup dengan ringkasan rilis

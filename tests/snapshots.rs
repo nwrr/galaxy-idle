@@ -38,3 +38,30 @@ fn main_menu() {
 fn planet_view() {
     check("planet_view", 80, 30, "planet_view_80x30.txt");
 }
+
+#[test]
+fn research() {
+    check("research", 120, 40, "research_120x40.txt");
+}
+
+#[test]
+fn warp() {
+    check("warp", 120, 40, "warp_120x40.txt");
+}
+
+#[test]
+fn galaxy_map() {
+    check("galaxy_map", 120, 40, "galaxy_map_120x40.txt");
+}
+
+// -- Responsiveness: main_menu di tiap breakpoint (06 §Responsive) --
+
+#[test]
+fn main_menu_compact() {
+    check("main_menu", 80, 30, "main_menu_80x30.txt");
+}
+
+#[test]
+fn main_menu_minimal() {
+    check("main_menu", 60, 24, "main_menu_60x24.txt");
+}

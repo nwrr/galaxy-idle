@@ -45,6 +45,25 @@ fn tier_line(app: &App, agg: &[(ResourceId, f64)], want: ResourceTier) -> String
         .join(" ")
 }
 
+/// Versi Compact: ringkas seluruh tier jadi **satu baris** (`06` §Responsive).
+pub fn render_compact(f: &mut Frame, app: &App, area: Rect) {
+    let th = theme::theme(app.state.settings.theme);
+    let agg = aggregate(app);
+    let mut spans = vec![Span::styled("RES ", Style::default().fg(th.header).bold())];
+    for (label, tier, col) in [
+        ("B:", ResourceTier::Basic, th.basic),
+        ("A:", ResourceTier::Advanced, th.advanced),
+        ("R:", ResourceTier::Rare, th.rare),
+    ] {
+        spans.push(Span::styled(label, Style::default().fg(col).bold()));
+        spans.push(Span::styled(
+            format!("{} ", tier_line(app, &agg, tier)),
+            Style::default().fg(col),
+        ));
+    }
+    f.render_widget(Paragraph::new(Line::from(spans)), area);
+}
+
 pub fn render(f: &mut Frame, app: &App, area: Rect) {
     let th = theme::theme(app.state.settings.theme);
     let agg = aggregate(app);

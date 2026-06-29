@@ -173,6 +173,7 @@ mod tests {
             name: "Test".into(),
             tier: 1,
             biome: Biome::Terran,
+            distance: 1.0,
             unlocked: true,
             unlock_req: UnlockReq::None,
             nodes: vec![],

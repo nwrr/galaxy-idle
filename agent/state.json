@@ -1,14 +1,14 @@
 {
-  "iter": 18,
-  "milestone": "M5",
-  "current_item": "game/research.rs: Data/sec, alokasi ke tech node, completion",
+  "iter": 37,
+  "milestone": "DONE",
+  "current_item": "SELESAI — semua DoD G1–G10 ✅; loop dihentikan atas permintaan setelah Goal Gate",
   "last_verify": "HIJAU",
   "last_snapshot": "planet_view_80x30",
   "failing_checks": [],
   "blocker": null,
   "done_criteria": {
-    "G1": false, "G2": false, "G3": false, "G4": false, "G5": false,
-    "G6": false, "G7": false, "G8": true, "G9": false, "G10": false
+    "G1": true, "G2": true, "G3": true, "G4": true, "G5": true,
+    "G6": true, "G7": true, "G8": true, "G9": true, "G10": true
   },
-  "updated_unix": 1751156220
+  "updated_unix": 1751208600
 }

@@ -19,6 +19,8 @@ pub struct TickReport {
     pub energy_deficit: bool,
     pub credits_gained: f64,
     pub data_gained: f64,
+    /// Id tech yang selesai diteliti pada tick ini (feedback UI), bila ada.
+    pub research_completed: Option<String>,
 }
 
 /// Jalankan satu tick simulasi pada galaksi aktif + state global.
@@ -36,11 +38,14 @@ pub fn step(state: &mut GameState, content: &Content) -> TickReport {
     // Clone agar tidak meminjam `state` saat memutasi galaksi aktif.
     let rules = state.settings.auto_sell.clone();
     let blueprints = state.prestige.blueprints.clone();
+    let completed = state.research.completed.clone();
     let mut data_rate = 0.0;
 
     for planet in state.galaxies[gi].planets.iter_mut().filter(|p| p.unlocked) {
-        // 1. Extractor: node → stockpile (tech_mult 1.0; research M5).
-        run_extractors(planet, |_| 1.0);
+        // 1. Extractor: node → stockpile (tech_mult dari research yang selesai).
+        run_extractors(planet, |r| {
+            crate::game::research::tech_mult(&completed, content, r)
+        });
         // 2. Refinery: raw → crafted (atau catat deficit).
         report
             .deficits
@@ -80,15 +85,16 @@ pub fn step(state: &mut GameState, content: &Content) -> TickReport {
     }
 
     state.credits += report.credits_gained;
-    // 5b. Research: tambah Data; majukan active research (completion → M5).
+    // 5b. Research: tambah Data ke pool, alokasi ke tech aktif, selesaikan + terapkan efek.
     report.data_gained = data_rate * TICK_DURATION_SECS;
-    state.research.data += report.data_gained;
-    if let Some(active) = state.research.active.as_mut() {
-        active.elapsed_secs += TICK_DURATION_SECS;
-    }
-    // 6. Ship travel: majukan elapsed; resolusi tiba. (Roll event → M6/M9.)
+    report.research_completed = crate::game::research::advance(state, content, report.data_gained);
+    // 6. Ship travel: majukan elapsed; resolusi tiba; roll event saat Traveling.
     advance_travel(state);
-    // 7. Anchor feed → M8. 8. Merchant expire/restock → M9. 9. Buff expiry → M9.
+    crate::game::events::tick_travel_events(state, content);
+    // 7. Anchor feed: Milky Way → galaksi aktif (hanya saat aktif ≠ anchor).
+    crate::game::prestige::apply_anchor_feed(state, content);
+    // 8. Merchant: nonaktifkan window yang habis. 9. Buff expiry → ditunda (butuh field buff).
+    crate::game::events::update_merchant(&mut state.merchant, state.tick);
 
     report
 }
@@ -169,6 +175,7 @@ mod tests {
             name: "Earth".into(),
             tier: 1,
             biome: Biome::Terran,
+            distance: 1.0,
             unlocked: true,
             unlock_req: UnlockReq::None,
             nodes: vec![ResourceNode {
@@ -212,6 +219,7 @@ mod tests {
             name: "Earth".into(),
             tier: 1,
             biome: Biome::Terran,
+            distance: 1.0,
             unlocked: true,
             unlock_req: UnlockReq::None,
             nodes: vec![],
@@ -239,6 +247,7 @@ mod tests {
             name: "Luna".into(),
             tier: 1,
             biome: Biome::DeadWorld,
+            distance: 1.0,
             unlocked: false,
             unlock_req: UnlockReq::WarpTier(1),
             nodes: vec![],

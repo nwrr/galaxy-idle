@@ -10,12 +10,13 @@
 
 use crate::game::defs::{BuildingId, RecipeId, ResourceId};
 use crate::game::events::EventQueue;
+use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
 
 // ── Id runtime (instance, bukan konten) ─────────────────────────────────────
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
 pub struct GalaxyId(pub u32);
-#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Serialize, Deserialize)]
 pub struct PlanetId(pub u32);
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
 pub struct FactoryId(pub u32);
@@ -53,7 +54,7 @@ pub struct ResourceNode {
 }
 
 // ── Planet & Galaxy ──────────────────────────────────────────────────────────
-#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Deserialize, Serialize)]
 pub enum Biome {
     IronWorld,
     OceanPlanet,
@@ -80,6 +81,8 @@ pub struct Planet {
     pub name: String,
     pub tier: u8,
     pub biome: Biome,
+    /// Jarak (AU abstrak) — basis travel time (`03` §4, `09`).
+    pub distance: f64,
     pub unlocked: bool,
     pub unlock_req: UnlockReq,
     pub nodes: Vec<ResourceNode>,
@@ -88,7 +91,7 @@ pub struct Planet {
     pub stockpile_cap: f64,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum GalaxyKind {
     Fixed,
     Procedural { seed: u64, visited: HashSet<u32> },
@@ -104,7 +107,7 @@ pub struct Galaxy {
 }
 
 // ── Ship ─────────────────────────────────────────────────────────────────────
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Serialize, Deserialize)]
 pub enum ShipStatus {
     Idle,
     Traveling {
@@ -114,7 +117,7 @@ pub enum ShipStatus {
     },
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Serialize, Deserialize)]
 pub struct Ship {
     pub warp_tier: u8,
     pub engine: u32,
@@ -141,7 +144,7 @@ impl Default for Ship {
 }
 
 // ── Research ─────────────────────────────────────────────────────────────────
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct ResearchState {
     pub data: f64,
     /// Tech id (string, data-driven) yang sudah selesai. (`01` pakai &'static; tech kini dari RON.)
@@ -149,7 +152,7 @@ pub struct ResearchState {
     pub active: Option<ActiveResearch>,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ActiveResearch {
     pub tech_id: String,
     pub data_invested: f64,
@@ -166,7 +169,7 @@ pub struct PrestigeState {
     pub anchor: AnchorState,
 }
 
-#[derive(Clone, Copy, Debug, Default)]
+#[derive(Clone, Copy, Debug, Default, Serialize, Deserialize)]
 pub struct AnchorState {
     pub passive_upgrade_level: u32,
 }
@@ -201,7 +204,7 @@ pub struct Merchant {
 
 // ── Settings ─────────────────────────────────────────────────────────────────
 /// Pilihan tema warna (detail di `06-ui.md`; di-resolve ke palet di `ui::theme` M3).
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub enum ThemeChoice {
     #[default]
     Default,

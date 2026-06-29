@@ -24,6 +24,8 @@ pub enum ActionError {
     NotBuildable,
     MissingBinding,
     Insufficient,
+    /// Building/recipe masih terkunci research (butuh tech `UnlockBuilding`/`Recipe`). `03` §5.
+    TechLocked,
 }
 
 fn active_gi(state: &GameState) -> Result<usize, ActionError> {
@@ -98,6 +100,9 @@ pub fn build_factory(
     if planet.tier < bdef.min_planet_tier {
         return Err(ActionError::TierTooLow);
     }
+    if !crate::game::research::building_available(state, content, &bdef.id) {
+        return Err(ActionError::TechLocked);
+    }
     if planet.factory_slots[slot].is_some() {
         return Err(ActionError::SlotOccupied);
     }
@@ -109,9 +114,14 @@ pub fn build_factory(
         BuildingKind::Extractor => FactoryKind::Extractor {
             node: node.ok_or(ActionError::MissingBinding)?,
         },
-        BuildingKind::Refinery => FactoryKind::Refinery {
-            recipe: recipe.ok_or(ActionError::MissingBinding)?,
-        },
+        BuildingKind::Refinery => {
+            let rid = recipe.ok_or(ActionError::MissingBinding)?;
+            let recipe_name = &content.recipes.get(rid.0).id;
+            if !crate::game::research::recipe_available(state, content, recipe_name) {
+                return Err(ActionError::TechLocked);
+            }
+            FactoryKind::Refinery { recipe: rid }
+        }
         BuildingKind::ResearchLab => FactoryKind::ResearchLab,
         BuildingKind::Storage | BuildingKind::Special => return Err(ActionError::NotBuildable),
     };
@@ -203,6 +213,7 @@ mod tests {
             name: "P".into(),
             tier,
             biome: Biome::Terran,
+            distance: 1.0,
             unlocked: true,
             unlock_req: UnlockReq::None,
             nodes: vec![],
@@ -268,6 +279,41 @@ mod tests {
             build_factory(&mut broke, &c, 0, 0, drill, Some(NodeId(0)), None),
             Err(ActionError::Insufficient)
         );
+    }
+
+    #[test]
+    fn tech_locked_building_then_unlocked() {
+        let c = content();
+        // deep_core_miner butuh tech ext_deep_core (UnlockBuilding) + tier 2.
+        let dcm = BuildingId(c.buildings.id("deep_core_miner").unwrap());
+        let mut st = state_t(2, 3);
+        assert_eq!(
+            build_factory(&mut st, &c, 0, 0, dcm, Some(NodeId(0)), None),
+            Err(ActionError::TechLocked)
+        );
+        // Research selesai → gate tech terbuka (lalu gagal karena dana/steel, bukan TechLocked).
+        st.research.completed.insert("ext_deep_core".into());
+        assert_eq!(
+            build_factory(&mut st, &c, 0, 0, dcm, Some(NodeId(0)), None),
+            Err(ActionError::Insufficient) // butuh 500 credits + 50 steel.
+        );
+    }
+
+    #[test]
+    fn tech_locked_recipe_then_unlocked() {
+        let c = content();
+        // steel_mill recipe terkunci tech manu_steel.
+        let mill = BuildingId(c.buildings.id("steel_mill_bld").unwrap());
+        let steel = RecipeId(c.recipes.id("steel_mill").unwrap());
+        let mut st = state_t(1, 3);
+        assert_eq!(
+            build_factory(&mut st, &c, 0, 0, mill, None, Some(steel)),
+            Err(ActionError::TechLocked)
+        );
+        // Research selesai → recipe boleh dipilih → build sukses (base_cost 200 credits).
+        st.research.completed.insert("manu_steel".into());
+        build_factory(&mut st, &c, 0, 0, mill, None, Some(steel)).unwrap();
+        assert!((st.credits - 800.0).abs() < 1e-9);
     }
 
     #[test]
