@@ -1,0 +1,30 @@
+┌ STELLAR IDLE ────────────────────────────────────────────────────────────────┐
+│Earth  |  T+00:00:00  |  Ship: Idle                                           │
+│┌────────────┐┌────────────────────────────────────────┐       ▄▄▄▄▄▄         │
+││OPTIONS     ││EARTH - Terran (Lvl 1) - d=1.0          │    ▄▀▀▀▀▀▀▀▀▀▀▄      │
+││NAVIGATION  ││RESOURCE NODES (3)                      │  ▄▀▀▀▀▀▀▀▀▀▀▀▀▀▀▄    │
+││  Galaxy Map││► Iron   richness x1.5 L4 | Cost: 175   │ ▄▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    │
+││  Planets   ││Credits [--]                            │ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▄   │
+││   * Earth  ││  Carbon richness x1.2 L2               │ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    │
+││   o Mars   ││  Water  richness x2.0 L3               │ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    │
+││   o Jupiter││FACTORIES (4)                           │  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀     │
+││  Fleet     ││► Mining Drill L4 Extractor [ON] → Iron │    ▀▀▀▀▀▀▀▀▀▀▀▀      │
+││PROGRESS    ││| Cost: 87 Credits [--]                 │       ▀▀▀▀▀▀         │
+││  Research  ││  Steel Mill   L2 Refinery [ON]         │                      │
+││  Merchant  ││  [+ Build]                             │                      │
+││SYSTEM      ││  Research Lab L2 Research Lab [ON]     │                      │
+││  Settings  ││NET INCOME/S: Iron +2  Carbon -2  Steel │                      │
+││  Save (Ctrl││+2                                      │                      │
+││            ││STOCKPILE: Iron [..........] 1%  Carbon │                      │
+││            ││[..........] 0%  Water [..........] 0%  │                      │
+││            ││SHIP: WarpTier 3 | Engine L2 Cargo L1   │                      │
+││            ││Scanner L0                              │                      │
+││            ││RESEARCH: +10 Data/s | Active:          │                      │
+││            ││manu_steel                              │                      │
+││            ││Status: Idle                            │                      │
+││            ││[j/k]Pilih [1]Node [2]Upgrade           │                      │
+││            ││                                        │                      │
+││            ││                                        │                      │
+││            ││                                        │                      │
+│└────────────┘└────────────────────────────────────────┘                      │
+└──────────────────────────────────────────────────────────────────────────────┘

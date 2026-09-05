@@ -1,0 +1,12 @@
+{
+  "set": "ship",
+  "workflow": "workflow_zimage_turbo_api",
+  "style": "sci-fi starship, three-quarter side view, centered, facing right, black space background with faint distant stars, dramatic rim lighting, detailed metallic hull panels, glowing engine exhaust, cinematic concept art, sharp focus",
+  "negative": "blurry, low contrast, watermark, text, logo, frame, multiple ships, fleet, deformed hull, lowres, washed out, cartoonish",
+  "size": "1024x1024",
+  "items": [
+    { "id": "ship", "seed": 3000001,
+      "subject": "sleek mid-size single-pilot exploration and cargo spacecraft, angular grey-and-blue metallic hull, small cargo pods along the spine, twin engine nacelles glowing cyan-blue, cockpit canopy with faint light, scanner array dish on the nose",
+      "ref": "colors:#7a8b99,#2ecbf0,#1a1e24" }
+  ]
+}

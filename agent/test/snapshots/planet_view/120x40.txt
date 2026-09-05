@@ -1,0 +1,40 @@
+┌ STELLAR IDLE ────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│Earth                                                                                                       T+00:00:00│
+│Ship: Idle  |  Research: manu_steel (48s left)                                                                        │
+│RESOURCES             ┌────────────────────────────────────┐               ▄▄▄▄▄▄▄▄▄▄▄              ┌────────────────┐│
+│Iron                  │EARTH - Terran (Lvl 1) - d=1.0      │          ▄▄▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▄▄          │OPTIONS         ││
+│            850/100.0k│RESOURCE NODES (3)                  │        ▄▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▄        │NAVIGATION      ││
+│     +21.6k/h 04:35:25│► Iron   richness x1.5 L4 | Cost:   │      ▄▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▄      │  Galaxy Map    ││
+│Water                 │175 Credits [--]                    │     ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀     │  Planets       ││
+│            430/100.0k│  Carbon richness x1.2 L2           │    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▄    │   * Earth      ││
+│         +0/h --:--:--│  Water  richness x2.0 L3           │   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    │   o Mars       ││
+│Energy                │FACTORIES (4)                       │   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▄   │   o Jupiter    ││
+│           1.2k/100.0k│► Mining Drill L4 Extractor [ON] →  │  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   │  Fleet         ││
+│         +0/h --:--:--│Iron | Cost: 87 Credits [--]        │  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   │PROGRESS        ││
+│Alloys                │  Steel Mill   L2 Refinery [ON]     │   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▄    │  Research      ││
+│            120/100.0k│  [+ Build]                         │   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    │  Merchant      ││
+│         +0/h --:--:--│  Research Lab L2 Research Lab [ON] │    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    │SYSTEM          ││
+│Consumer Goods        │NET INCOME/S: Iron +2  Carbon -2    │     ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀     │  Settings      ││
+│             85/100.0k│Steel +2                            │      ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀      │  Save (Ctrl+S) ││
+│         +0/h --:--:--│STOCKPILE: Iron [..........] 1%     │        ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀        └────────────────┘│
+│Rare Crystals         │Carbon [..........] 0%  Water       │          ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                            │
+│             12/100.0k│[..........] 0%                     │               ▀▀▀▀▀▀▀▀▀▀▀                                │
+│         +0/h --:--:--│SHIP: WarpTier 3 | Engine L2 Cargo  │                                                          │
+│Dark Matter           │L1 Scanner L0                       │                                                          │
+│              3/100.0k│RESEARCH: +10 Data/s | Active:      │                                                          │
+│         +0/h --:--:--│manu_steel                          │                                                          │
+│┌Building────────────┐│Status: Idle                        │                                                          │
+││Idle (3/4 slot)     ││[j/k]Pilih [1]Node [2]Upgrade       │                                                          │
+│└────────────────────┘│                                    │                                                          │
+│┌Training────────────┐│                                    │                                                          │
+││manu_steel          ││                                    │                                        ┌────────────────┐│
+││[####..] 48s left   ││                                    │                                        │SHORTCUTS       ││
+│└────────────────────┘│                                    │                                        │g:Galaxy        ││
+│┌Assets──────────────┐│                                    │                                        │p:Planet        ││
+││Mining Drill L4     ││                                    │                                        │r:Research      ││
+││Steel Mill L2       ││                                    │                                        │m:Merchant      ││
+││Research Lab L2     ││                                    │                                        │S:Settings      ││
+││Ship WT3 E2 C1 S0   ││                                    │                                        │?:Help          ││
+│└────────────────────┘└────────────────────────────────────┘                                        └────────────────┘│
+│MARKET: tutup — kunjungan berikut dlm 00:00:00                                                                        │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘

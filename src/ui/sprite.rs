@@ -14,6 +14,7 @@ use ratatui::layout::Rect;
 use ratatui::style::{Style, Stylize};
 use ratatui::text::Text;
 use ratatui::widgets::{Block, Paragraph};
+use std::cell::RefCell;
 use std::collections::HashMap;
 use std::path::PathBuf;
 
@@ -99,10 +100,12 @@ impl ColorDepth {
 }
 
 /// Cache sprite celestial: parse `.ans` → `Text` per `(base,size,depth)`, depth dipilih sekali.
+/// Cache dibungkus `RefCell` agar `render` bisa dipanggil lewat `&App` (panel view tak butuh
+/// `&mut App` cuma utk gambar sprite).
 pub struct Sprites {
     root: PathBuf,
     depth: ColorDepth,
-    cache: HashMap<String, Text<'static>>,
+    cache: RefCell<HashMap<String, Text<'static>>>,
 }
 
 impl Sprites {
@@ -111,7 +114,7 @@ impl Sprites {
         Sprites {
             root,
             depth: ColorDepth::detect(),
-            cache: HashMap::new(),
+            cache: RefCell::new(HashMap::new()),
         }
     }
 
@@ -120,7 +123,7 @@ impl Sprites {
         Sprites {
             root,
             depth,
-            cache: HashMap::new(),
+            cache: RefCell::new(HashMap::new()),
         }
     }
 
@@ -129,15 +132,15 @@ impl Sprites {
     }
 
     pub fn len(&self) -> usize {
-        self.cache.len()
+        self.cache.borrow().len()
     }
 
     pub fn is_empty(&self) -> bool {
-        self.cache.is_empty()
+        self.cache.borrow().is_empty()
     }
 
-    pub fn clear(&mut self) {
-        self.cache.clear();
+    pub fn clear(&self) {
+        self.cache.borrow_mut().clear();
     }
 
     fn key(base: &str, size: SpriteSize, depth: ColorDepth) -> String {
@@ -145,27 +148,28 @@ impl Sprites {
     }
 
     /// Parse `base`/`size` pada depth efektif (turun bila perlu). `None` bila semua varian gagal.
-    fn ensure(&mut self, base: &str, size: SpriteSize) -> Option<&Text<'static>> {
+    fn ensure(&self, base: &str, size: SpriteSize) -> Option<Text<'static>> {
         let key = Self::key(base, size, self.depth);
-        if !self.cache.contains_key(&key) {
-            let text = self.depth.chain().iter().find_map(|d| {
-                let path =
-                    self.root
-                        .join(base)
-                        .join(format!("{}.{}.ans", size.suffix(), d.suffix()));
-                let bytes = std::fs::read(&path).ok()?;
-                bytes.into_text().ok()
-            })?;
-            self.cache.insert(key.clone(), text);
+        if let Some(t) = self.cache.borrow().get(&key) {
+            return Some(t.clone());
         }
-        self.cache.get(&key)
+        let text = self.depth.chain().iter().find_map(|d| {
+            let path = self
+                .root
+                .join(base)
+                .join(format!("{}.{}.ans", size.suffix(), d.suffix()));
+            let bytes = std::fs::read(&path).ok()?;
+            bytes.into_text().ok()
+        })?;
+        self.cache.borrow_mut().insert(key, text.clone());
+        Some(text)
     }
 
     /// Render sprite `base` ke `area`; size dipilih dari luas `area`. Kotak fallback bila gagal.
-    pub fn render(&mut self, f: &mut Frame, area: Rect, base: &str) {
+    pub fn render(&self, f: &mut Frame, area: Rect, base: &str) {
         let size = SpriteSize::for_area(area);
         match self.ensure(base, size) {
-            Some(text) => f.render_widget(Paragraph::new(text.clone()), area),
+            Some(text) => f.render_widget(Paragraph::new(text), area),
             None => {
                 let fb = Paragraph::new(format!("[sprite?\n {base}]"))
                     .block(Block::bordered())
@@ -210,7 +214,7 @@ mod tests {
 
     #[test]
     fn render_colored_sprite_fills_and_caches() {
-        let mut s = Sprites::with_depth(sprites_root(), ColorDepth::Tc);
+        let s = Sprites::with_depth(sprites_root(), ColorDepth::Tc);
         let mut term = Terminal::new(TestBackend::new(64, 32)).unwrap();
         term.draw(|f| s.render(f, f.area(), "planet_ocean"))
             .unwrap();
@@ -232,7 +236,7 @@ mod tests {
 
     #[test]
     fn second_render_reuses_cache() {
-        let mut s = Sprites::with_depth(sprites_root(), ColorDepth::Tc);
+        let s = Sprites::with_depth(sprites_root(), ColorDepth::Tc);
         let mut term = Terminal::new(TestBackend::new(64, 32)).unwrap();
         term.draw(|f| s.render(f, f.area(), "planet_lavaworld"))
             .unwrap();
@@ -243,7 +247,7 @@ mod tests {
 
     #[test]
     fn missing_base_falls_back_without_caching() {
-        let mut s = Sprites::with_depth(sprites_root(), ColorDepth::Tc);
+        let s = Sprites::with_depth(sprites_root(), ColorDepth::Tc);
         let mut term = Terminal::new(TestBackend::new(20, 10)).unwrap();
         term.draw(|f| s.render(f, f.area(), "planet_nope")).unwrap();
         assert!(s.is_empty());
@@ -252,7 +256,7 @@ mod tests {
     #[test]
     fn depth_falls_back_when_variant_absent() {
         // semua base punya .16; minta Tc tetap dapat (chain turun ke yang ada).
-        let mut s = Sprites::with_depth(sprites_root(), ColorDepth::Tc);
+        let s = Sprites::with_depth(sprites_root(), ColorDepth::Tc);
         let mut term = Terminal::new(TestBackend::new(20, 10)).unwrap();
         term.draw(|f| s.render(f, f.area(), "star_sun")).unwrap();
         assert_eq!(s.len(), 1);

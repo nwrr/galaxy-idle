@@ -1,0 +1,40 @@
+┌ STELLAR IDLE ────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│Earth                                                                                                       T+00:00:00│
+│Ship: Idle  |  Research: manu_steel (48s left)                                                                        │
+│RESOURCES             ┌────────────────────────────────────────────────────────────────────────────┐┌────────────────┐│
+│Iron                  │RESEARCH TERMINAL                                                           ││OPTIONS         ││
+│            850/100.0k│Data/sec: +10   Data total: 50                                              ││NAVIGATION      ││
+│     +21.6k/h 04:35:25│Warp Tier: 3 | Next: aero_warp_mk2 -> Tier 6                                ││  Galaxy Map    ││
+│Water                 │ACTIVE: manu_steel [Manufacturing]                                          ││  Planets       ││
+│            430/100.0k│[######....] 60%                                                            ││   * Earth      ││
+│         +0/h --:--:--│Data: 300/500  Time: 72/120s (48s left)                                     ││   o Mars       ││
+│Energy                │                                                                            ││   o Jupiter    ││
+│           1.2k/100.0k│EXTRACTION (2)                                                              ││  Fleet         ││
+│         +0/h --:--:--│► [--] ext_deep_core   cost: 8.0k Data  time: 1,200s  └manu_steel           ││PROGRESS        ││
+│Alloys                │  [OK] ext_efficiency  cost: 4.0k Data  time: 600s                          ││  Research      ││
+│            120/100.0k│MANUFACTURING (2)                                                           ││  Merchant      ││
+│         +0/h --:--:--│  [>>] manu_steel      cost: 500 Data  time: 120s                           ││SYSTEM          ││
+│Consumer Goods        │  [--] manu_titanium   cost: 2.0k Data  time: 300s  └manu_steel             ││  Settings      ││
+│             85/100.0k│AEROSPACE (2)                                                               ││  Save (Ctrl+S) ││
+│         +0/h --:--:--│  [--] aero_warp_mk2   cost: 5.0k Data  time: 600s  └manu_titanium          │└────────────────┘│
+│Rare Crystals         │  [--] aero_warp_mk3   cost: 25.0k Data  time: 1,800s  └aero_warp_mk2       │                  │
+│             12/100.0k│ASTROCARTOGRAPHY (1)                                                        │                  │
+│         +0/h --:--:--│  [--] astro_far_warp  cost: 20.0k Data  time: 2,400s  └aero_warp_mk2       │                  │
+│Dark Matter           │                                                                            │                  │
+│              3/100.0k│DETAIL: ext_deep_core [Locked]                                              │                  │
+│         +0/h --:--:--│Efek: Buka bangunan: deep_core_miner                                        │                  │
+│┌Building────────────┐│Biaya: 8.0k Data, 1,200s                                                    │                  │
+││Idle (3/4 slot)     ││Depends on: manu_steel                                                      │                  │
+│└────────────────────┘│[j/k]Pilih  [Enter]Mulai riset  [p]Planet  [g]Galaxy                        │                  │
+│┌Training────────────┐│                                                                            │                  │
+││manu_steel          ││                                                                            │┌────────────────┐│
+││[####..] 48s left   ││                                                                            ││SHORTCUTS       ││
+│└────────────────────┘│                                                                            ││g:Galaxy        ││
+│┌Assets──────────────┐│                                                                            ││p:Planet        ││
+││Mining Drill L4     ││                                                                            ││r:Research      ││
+││Steel Mill L2       ││                                                                            ││m:Merchant      ││
+││Research Lab L2     ││                                                                            ││S:Settings      ││
+││Ship WT3 E2 C1 S0   ││                                                                            ││?:Help          ││
+│└────────────────────┘└────────────────────────────────────────────────────────────────────────────┘└────────────────┘│
+│MARKET: tutup — kunjungan berikut dlm 00:00:00                                                                        │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘

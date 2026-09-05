@@ -7,8 +7,8 @@
 #![allow(dead_code)]
 
 use crate::game::defs::{
-    BuildingDef, Content, ItemDef, ItemEffect, RecipeDef, Registry, ResourceDef, TechDef,
-    TechUnlock,
+    BuildingDef, Content, ItemDef, ItemEffect, QuestDef, QuestReq, RecipeDef, Registry,
+    ResourceDef, TechDef, TechUnlock,
 };
 use serde::de::DeserializeOwned;
 use std::fmt;
@@ -89,12 +89,14 @@ pub fn load_content(dir: &Path) -> Result<Content, ContentError> {
         "buildings.ron",
     )?;
     let techs = build_reg(read_vec::<TechDef>(dir, "tech_tree.ron")?, "tech_tree.ron")?;
+    let quests = build_reg(read_vec::<QuestDef>(dir, "quests.ron")?, "quests.ron")?;
     let content = Content {
         resources,
         items,
         recipes,
         buildings,
         techs,
+        quests,
     };
     validate(&content)?;
     Ok(content)
@@ -205,6 +207,42 @@ pub fn validate(c: &Content) -> Result<(), ContentError> {
                 }
             }
             _ => {}
+        }
+    }
+    // M6: Quest → tech (QuestReq::TechCompleted), stage ids unik per quest, `next_stage`
+    // (branch/auto-chain) HARUS rujuk stage id NYATA dlm quest yg sama (dangling next_stage
+    // = quest bisa stuck permanen, gagal-cepat di sini drpd nemu bug runtime pas main).
+    for q in c.quests.iter() {
+        let by = format!("quest {}", q.id);
+        let mut stage_ids = std::collections::HashSet::new();
+        for s in &q.stages {
+            if !stage_ids.insert(s.id.as_str()) {
+                return Err(ContentError::DuplicateId {
+                    file: "quests.ron".into(),
+                    id: format!("{}::{}", q.id, s.id),
+                });
+            }
+        }
+        for s in &q.stages {
+            let by = format!("{by} stage {}", s.id);
+            if let QuestReq::TechCompleted(t) = &s.requirement
+                && !c.techs.contains(t)
+            {
+                return Err(ContentError::MissingRef {
+                    kind: "tech",
+                    id: t.clone(),
+                    referenced_by: by,
+                });
+            }
+            for b in &s.branches {
+                if !stage_ids.contains(b.next_stage.as_str()) {
+                    return Err(ContentError::MissingRef {
+                        kind: "quest stage",
+                        id: b.next_stage.clone(),
+                        referenced_by: format!("{by} branch {}", b.label),
+                    });
+                }
+            }
         }
     }
     Ok(())

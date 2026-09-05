@@ -29,6 +29,57 @@ def rgb_to_16(r, g, b):
     return best
 
 
+_LEVELS6 = [0, 51, 102, 153, 204, 255]  # 6 nilai seragam kubus 256-warna (`rgb_to_256`)
+
+
+def quantized_rgb_256(r, g, b):
+    """RGB (0..255 int) yg SEBENARNYA direpresentasikan kode 256-warna dari `rgb_to_256(r,g,b)`
+    — formula sama persis (bukan tabel terpisah yg bisa nyimpang), dipakai dithering error-
+    diffusion (`imgconv.py` M09.7) utk hitung galat kuantisasi antara warna asli & terkuantisasi."""
+    if abs(r - g) < 8 and abs(g - b) < 8:
+        gray = round((r + g + b) / 3)
+        if gray < 8:
+            return (0, 0, 0)
+        if gray > 248:
+            return (255, 255, 255)
+        step = round((gray - 8) / 247 * 23)
+        val = round(8 + step / 23 * 247)
+        return (val, val, val)
+    q = lambda x: round(x / 255 * 5)
+    return (_LEVELS6[q(r)], _LEVELS6[q(g)], _LEVELS6[q(b)])
+
+
+def quantized_rgb_16(r, g, b):
+    """RGB (0..255 int) palet 16-warna terdekat (entri `_PAL16` yg dipilih `rgb_to_16`) — dipakai
+    dithering (M09.7), sama alasan dgn `quantized_rgb_256`."""
+    best, bd = _PAL16[0][1:], 1e18
+    for _, pr, pg, pb in _PAL16:
+        d = (r - pr) ** 2 + (g - pg) ** 2 + (b - pb) ** 2
+        if d < bd:
+            bd, best = d, (pr, pg, pb)
+    return best
+
+
+def code_to_rgb_16(code):
+    """Kebalikan `rgb_to_16`: kode terminal (30-37/90-97) → RGB `_PAL16` (M10.1, dipakai decoder
+    `imgconv.ans_to_rgb` utk scoring fidelitas — re-render `.ans` balik jadi raster)."""
+    for c, r, g, b in _PAL16:
+        if c == code:
+            return (r, g, b)
+    return (0, 0, 0)  # kode tak dikenal (harusnya tak terjadi dari output `to_halfblock` sendiri)
+
+
+def code_to_rgb_256(code):
+    """Kebalikan `rgb_to_256`: kode 256-warna (16-255) → RGB (M10.1, sama alasan `code_to_rgb_16`).
+    Formula sama persis dgn `rgb_to_256`/`quantized_rgb_256` (bukan tabel terpisah)."""
+    if 232 <= code <= 255:
+        val = round(8 + (code - 232) / 23 * 247)
+        return (val, val, val)
+    idx = code - 16
+    qr, qg, qb = idx // 36, (idx % 36) // 6, idx % 6
+    return (_LEVELS6[qr], _LEVELS6[qg], _LEVELS6[qb])
+
+
 def _fg(rgb, depth):
     r, g, b = int(rgb[0] * 255), int(rgb[1] * 255), int(rgb[2] * 255)
     if depth == "tc":

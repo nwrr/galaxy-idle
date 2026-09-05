@@ -333,6 +333,96 @@ pub fn update_merchant(merchant: &mut Merchant, tick: u64) {
     }
 }
 
+/// M1 fix: **gap real ditemukan** — `MerchantOffer` (stock, harga) sudah dirender
+/// (`ui::mod`'s `offer_text`/`market_footer_text`) SEJAK M13.5, tp tak PERNAH ada fungsi utk
+/// genuinely MENERIMA satu offer (dikonfirmasi grep: `restock_merchant` cuma ISI stock, tak
+/// ada consumer). Pola SAMA `game::actions`'s aksi lain: mutasi state NYATA + `Result` utk
+/// precondition gagal (bukan panic). `SellResource`/`BuyResource` dihapus dari stock stlh
+/// diterima (one-shot, konsisten "supply terbatas" — REstock brings fresh offers); `Blueprint`
+/// TETAP di stock tp `owned` di-flip `true` (field itu sendiri sudah ada tuk ini, gak pernah
+/// dibaca game logic manapun lain -- BELUM ada mekanik "recipe terkunci sampai blueprint
+/// dibeli" di tempat lain, jadi ini TAK mengklaim gate baru, cuma catat status beli genuinely).
+#[derive(Debug, PartialEq, Eq)]
+pub enum MerchantError {
+    NotActive,
+    OutOfRange,
+    Insufficient,
+    NoActivePlanet,
+}
+
+pub fn accept_merchant_offer(state: &mut GameState, idx: usize) -> Result<(), MerchantError> {
+    if !state.merchant.active {
+        return Err(MerchantError::NotActive);
+    }
+    let Some(offer) = state.merchant.stock.get(idx).cloned() else {
+        return Err(MerchantError::OutOfRange);
+    };
+    match offer {
+        MerchantOffer::SellResource {
+            resource,
+            amount,
+            gain_credits,
+        } => {
+            let p = active_planet_mut(state).ok_or(MerchantError::NoActivePlanet)?;
+            let have = p.stockpile.get(&resource).copied().unwrap_or(0.0);
+            if have < amount {
+                return Err(MerchantError::Insufficient);
+            }
+            p.stockpile.insert(resource, have - amount);
+            state.credits += gain_credits;
+            state.merchant.stock.remove(idx);
+            Ok(())
+        }
+        MerchantOffer::BuyResource {
+            resource,
+            amount,
+            cost_cores,
+        } => {
+            if state.prestige.warp_cores < cost_cores {
+                return Err(MerchantError::Insufficient);
+            }
+            let p = active_planet_mut(state).ok_or(MerchantError::NoActivePlanet)?;
+            let cur = p.stockpile.get(&resource).copied().unwrap_or(0.0);
+            p.stockpile
+                .insert(resource, (cur + amount).min(p.stockpile_cap));
+            state.prestige.warp_cores -= cost_cores;
+            state.merchant.stock.remove(idx);
+            Ok(())
+        }
+        // M1 fix: **gap real ditemukan** -- `state.prestige.blueprints` (`HashSet<RecipeId>`)
+        // adalah gerbang NYATA dibaca `economy.rs`'s cek produksi + `panels::planet`'s
+        // buildable check, TAPI tak PERNAH ada satupun jalur gameplay yg genuinely
+        // `.insert()` ke situ (dikonfirmasi grep: cuma diisi `save/dto.rs` saat LOAD save lama
+        // -- new-game-forever tak bisa dpt blueprint recipe SAMA SEKALI). Beli offer INI
+        // adalah jalur gameplay PERTAMA yg genuinely unlock recipe (bukan cuma flip `owned`
+        // kosmetik yg sebelumnya tak dibaca logic manapun).
+        MerchantOffer::Blueprint {
+            recipe, cost_cores, ..
+        } => {
+            if state.prestige.warp_cores < cost_cores {
+                return Err(MerchantError::Insufficient);
+            }
+            state.prestige.warp_cores -= cost_cores;
+            state.prestige.blueprints.insert(recipe);
+            if let MerchantOffer::Blueprint { owned, .. } = &mut state.merchant.stock[idx] {
+                *owned = true;
+            }
+            Ok(())
+        }
+    }
+}
+
+fn active_planet_mut(state: &mut GameState) -> Option<&mut crate::game::state::Planet> {
+    let active = state.active_galaxy;
+    state
+        .galaxies
+        .iter_mut()
+        .find(|g| g.id == active)?
+        .planets
+        .iter_mut()
+        .find(|p| p.unlocked)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -382,6 +472,8 @@ mod tests {
             merchant: Default::default(),
             events: Default::default(),
             settings: Default::default(),
+            tutorial_step: None,
+            quests: Default::default(),
         }
     }
 
@@ -458,5 +550,120 @@ mod tests {
         }
         assert!(st.events.pending.is_empty());
         assert_eq!(st.events.ticks_since_roll, EVENT_ROLL_INTERVAL_TICKS - 1);
+    }
+
+    #[test]
+    fn accept_sell_offer_moves_resource_to_credits() {
+        let c = content();
+        let mut st = state(&c);
+        let iron = ResourceId(c.resources.id("iron").unwrap());
+        st.galaxies[0].planets[0].stockpile.insert(iron, 1000.0);
+        st.merchant.active = true;
+        st.merchant.stock = vec![MerchantOffer::SellResource {
+            resource: iron,
+            amount: 100.0,
+            gain_credits: 200.0,
+        }];
+        assert_eq!(accept_merchant_offer(&mut st, 0), Ok(()));
+        assert!((st.galaxies[0].planets[0].stockpile[&iron] - 900.0).abs() < 1e-9);
+        assert!((st.credits - 200.0).abs() < 1e-9);
+        assert!(
+            st.merchant.stock.is_empty(),
+            "offer one-shot, harus dihapus stlh dipakai"
+        );
+    }
+
+    #[test]
+    fn accept_sell_offer_insufficient_stock_rejected() {
+        let c = content();
+        let mut st = state(&c);
+        let iron = ResourceId(c.resources.id("iron").unwrap());
+        st.merchant.active = true;
+        st.merchant.stock = vec![MerchantOffer::SellResource {
+            resource: iron,
+            amount: 100.0,
+            gain_credits: 200.0,
+        }];
+        assert_eq!(
+            accept_merchant_offer(&mut st, 0),
+            Err(MerchantError::Insufficient)
+        );
+        assert_eq!(
+            st.merchant.stock.len(),
+            1,
+            "gagal -> offer TETAP ada, tak dihapus"
+        );
+    }
+
+    #[test]
+    fn accept_buy_offer_spends_warp_cores_for_resource() {
+        let c = content();
+        let mut st = state(&c);
+        let antimatter = ResourceId(c.resources.id("antimatter").unwrap());
+        st.prestige.warp_cores = 5;
+        st.merchant.active = true;
+        st.merchant.stock = vec![MerchantOffer::BuyResource {
+            resource: antimatter,
+            amount: 1.0,
+            cost_cores: 1,
+        }];
+        assert_eq!(accept_merchant_offer(&mut st, 0), Ok(()));
+        assert_eq!(st.prestige.warp_cores, 4);
+        assert!((st.galaxies[0].planets[0].stockpile[&antimatter] - 1.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn accept_blueprint_offer_unlocks_real_gate_not_just_cosmetic_flag() {
+        // M1 fix: sblm ini `state.prestige.blueprints` (dibaca NYATA `economy.rs`) tak PERNAH
+        // ke-`insert` dari jalur gameplay manapun -- beli blueprint HARUS genuinely populate
+        // set itu, bukan cuma flip `owned` kosmetik di offer (yg sendiri tak dibaca logic lain).
+        let c = content();
+        let mut st = state(&c);
+        let rec = c
+            .recipes
+            .iter()
+            .position(|r| r.requires_blueprint)
+            .expect("data harus py >=1 recipe requires_blueprint");
+        let recipe_id = crate::game::defs::RecipeId(rec as u32);
+        st.prestige.warp_cores = 5;
+        st.merchant.active = true;
+        st.merchant.stock = vec![MerchantOffer::Blueprint {
+            recipe: recipe_id,
+            cost_cores: 2,
+            owned: false,
+        }];
+        assert!(!st.prestige.blueprints.contains(&recipe_id));
+        assert_eq!(accept_merchant_offer(&mut st, 0), Ok(()));
+        assert_eq!(st.prestige.warp_cores, 3);
+        assert!(
+            st.prestige.blueprints.contains(&recipe_id),
+            "harus genuinely unlock gerbang produksi NYATA"
+        );
+        assert!(matches!(
+            st.merchant.stock[0],
+            MerchantOffer::Blueprint { owned: true, .. }
+        ));
+    }
+
+    #[test]
+    fn accept_offer_rejected_when_merchant_inactive() {
+        let c = content();
+        let mut st = state(&c);
+        st.merchant.active = false;
+        assert_eq!(
+            accept_merchant_offer(&mut st, 0),
+            Err(MerchantError::NotActive)
+        );
+    }
+
+    #[test]
+    fn accept_offer_out_of_range_index_rejected() {
+        let c = content();
+        let mut st = state(&c);
+        st.merchant.active = true;
+        assert_eq!(
+            accept_merchant_offer(&mut st, 99),
+            Err(MerchantError::OutOfRange)
+        );
     }
 }

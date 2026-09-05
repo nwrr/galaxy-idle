@@ -14,13 +14,15 @@ use ratatui::widgets::{Block, Paragraph};
 use ratatui_image::StatefulImage;
 use ratatui_image::picker::Picker;
 use ratatui_image::protocol::StatefulProtocol;
+use std::cell::RefCell;
 use std::collections::HashMap;
 use std::path::Path;
 
-/// Cache portrait + picker protokol terminal.
+/// Cache portrait + picker protokol terminal. Cache dibungkus `RefCell` agar `render` bisa
+/// dipanggil lewat `&App` (panel view tak butuh `&mut App` cuma utk gambar portrait).
 pub struct Portraits {
     picker: Picker,
-    cache: HashMap<String, StatefulProtocol>,
+    cache: RefCell<HashMap<String, StatefulProtocol>>,
 }
 
 impl Portraits {
@@ -29,7 +31,7 @@ impl Portraits {
         let picker = Picker::from_query_stdio().unwrap_or_else(|_| Picker::halfblocks());
         Portraits {
             picker,
-            cache: HashMap::new(),
+            cache: RefCell::new(HashMap::new()),
         }
     }
 
@@ -37,32 +39,32 @@ impl Portraits {
     pub fn halfblocks() -> Self {
         Portraits {
             picker: Picker::halfblocks(),
-            cache: HashMap::new(),
+            cache: RefCell::new(HashMap::new()),
         }
     }
 
     /// Apakah id sudah ter-decode & ter-cache.
     pub fn has(&self, id: &str) -> bool {
-        self.cache.contains_key(id)
+        self.cache.borrow().contains_key(id)
     }
 
     /// Jumlah portrait dalam cache.
     pub fn len(&self) -> usize {
-        self.cache.len()
+        self.cache.borrow().len()
     }
 
     pub fn is_empty(&self) -> bool {
-        self.cache.is_empty()
+        self.cache.borrow().is_empty()
     }
 
     /// Buang semua protokol ter-cache (panggil saat panel portrait ditutup).
-    pub fn clear(&mut self) {
-        self.cache.clear();
+    pub fn clear(&self) {
+        self.cache.borrow_mut().clear();
     }
 
     /// Pastikan `id` ter-decode dari `path` (lazy). `false` bila gagal decode/baca.
-    fn ensure(&mut self, id: &str, path: &Path) -> bool {
-        if self.cache.contains_key(id) {
+    fn ensure(&self, id: &str, path: &Path) -> bool {
+        if self.cache.borrow().contains_key(id) {
             return true;
         }
         let Some(img) = image::ImageReader::open(path)
@@ -72,12 +74,12 @@ impl Portraits {
             return false;
         };
         let proto = self.picker.new_resize_protocol(img);
-        self.cache.insert(id.to_string(), proto);
+        self.cache.borrow_mut().insert(id.to_string(), proto);
         true
     }
 
     /// Render portrait `id` (`path`) ke `area`. Decode+cache sekali; kotak fallback bila gagal.
-    pub fn render(&mut self, f: &mut Frame, area: Rect, id: &str, path: &Path) {
+    pub fn render(&self, f: &mut Frame, area: Rect, id: &str, path: &Path) {
         if !self.ensure(id, path) {
             let fb = Paragraph::new(format!("[portrait?\n {id}]"))
                 .block(Block::bordered().title(" NPC "))
@@ -85,7 +87,8 @@ impl Portraits {
             f.render_widget(fb, area);
             return;
         }
-        if let Some(proto) = self.cache.get_mut(id) {
+        let mut cache = self.cache.borrow_mut();
+        if let Some(proto) = cache.get_mut(id) {
             f.render_stateful_widget(StatefulImage::<StatefulProtocol>::default(), area, proto);
         }
     }
@@ -103,7 +106,7 @@ mod tests {
 
     #[test]
     fn halfblocks_render_fills_buffer_and_caches() {
-        let mut p = Portraits::halfblocks();
+        let p = Portraits::halfblocks();
         let path = portrait_path();
         let mut term = Terminal::new(TestBackend::new(44, 32)).unwrap();
         term.draw(|f| p.render(f, f.area(), "char_alien_01", &path))
@@ -127,7 +130,7 @@ mod tests {
 
     #[test]
     fn second_render_reuses_cache() {
-        let mut p = Portraits::halfblocks();
+        let p = Portraits::halfblocks();
         let path = portrait_path();
         let mut term = Terminal::new(TestBackend::new(20, 16)).unwrap();
         term.draw(|f| p.render(f, f.area(), "a", &path)).unwrap();
@@ -137,7 +140,7 @@ mod tests {
 
     #[test]
     fn missing_file_falls_back_without_caching() {
-        let mut p = Portraits::halfblocks();
+        let p = Portraits::halfblocks();
         let mut term = Terminal::new(TestBackend::new(20, 10)).unwrap();
         term.draw(|f| p.render(f, f.area(), "nope", Path::new("/no/such/portrait.png")))
             .unwrap();
@@ -147,7 +150,7 @@ mod tests {
 
     #[test]
     fn clear_drops_cache() {
-        let mut p = Portraits::halfblocks();
+        let p = Portraits::halfblocks();
         let path = portrait_path();
         let mut term = Terminal::new(TestBackend::new(20, 16)).unwrap();
         term.draw(|f| p.render(f, f.area(), "a", &path)).unwrap();

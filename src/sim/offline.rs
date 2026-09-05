@@ -120,6 +120,8 @@ mod tests {
             merchant: Default::default(),
             events: Default::default(),
             settings: Default::default(),
+            tutorial_step: None,
+            quests: Default::default(),
         };
         st.settings.auto_sell = vec![AutoSellRule {
             resource: iron,

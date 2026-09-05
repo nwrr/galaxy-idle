@@ -202,6 +202,16 @@ pub struct Merchant {
     pub restock_at_tick: u64,
 }
 
+// ── Quest (M6) ────────────────────────────────────────────────────────────
+/// Progres quest pemain: quest aktif→stage id sekarang, quest id selesai, histori pilihan
+/// cabang (`quest_id` → `label` yg dipilih -- utk save round-trip + UI nunjukkan pilihan lama).
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
+pub struct QuestState {
+    pub active: HashMap<String, String>,
+    pub completed: std::collections::HashSet<String>,
+    pub choices: HashMap<String, String>,
+}
+
 // ── Settings ─────────────────────────────────────────────────────────────────
 /// Pilihan tema warna (detail di `06-ui.md`; di-resolve ke palet di `ui::theme` M3).
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
@@ -246,10 +256,19 @@ pub struct GameState {
     pub events: EventQueue,
 
     pub settings: Settings,
+    /// M6: progres questline (mirrors `research`'s Data-driven pattern).
+    pub quests: QuestState,
+
+    /// M3: langkah onboarding aktif (`0`=bangun extractor pertama, `1`=mulai riset pertama,
+    /// `2`=kirim ship travel, `3`=warp jump pertama, `None`=tutorial selesai/dilewati). Bukan
+    /// dismiss manual — auto-advance saat kondisi REAL terpenuhi (`game::tutorial`). Save lama
+    /// (v1, sblm field ini ada) di-migrasi ke `None` (pemain existing dianggap sudah lewat
+    /// onboarding, bukan dipaksa ulang — lihat `save::migrate`).
+    pub tutorial_step: Option<u8>,
 }
 
-/// Versi schema save saat ini (migrasi di `save/` M7).
-pub const SAVE_VERSION: u32 = 1;
+/// Versi schema save saat ini. v1→v2 (M3): tambah `tutorial_step`. v2→v3 (M6): tambah `quests`.
+pub const SAVE_VERSION: u32 = 3;
 
 #[cfg(test)]
 mod tests {

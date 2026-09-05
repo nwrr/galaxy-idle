@@ -1,0 +1,210 @@
+{
+  "banner": {
+    "dither": false,
+    "generated_at": "2026-07-02T19:37:30.398434+00:00",
+    "src": "assets/source/banner/banner.png",
+    "variants": {
+      "lg.16": 48.9,
+      "lg.256": 83.55,
+      "lg.tc": 100.0,
+      "md.16": 62.91,
+      "md.256": 90.7,
+      "md.tc": 100.0,
+      "sm.16": 80.82,
+      "sm.256": 96.89,
+      "sm.tc": 100.0
+    }
+  },
+  "galaxy": {
+    "dither": false,
+    "generated_at": "2026-07-02T19:12:19.134533+00:00",
+    "src": "assets/source/galaxy/galaxy.png",
+    "variants": {
+      "lg.16": 43.89,
+      "lg.256": 68.41,
+      "lg.tc": 100.0,
+      "md.16": 32.59,
+      "md.256": 63.25,
+      "md.tc": 100.0,
+      "sm.16": 11.68,
+      "sm.256": 59.39,
+      "sm.tc": 100.0
+    }
+  },
+  "planet_asteroidbelt": {
+    "dither": false,
+    "generated_at": "2026-07-02T18:19:51.713758+00:00",
+    "src": "assets/source/celestial/planet_asteroidbelt.png",
+    "variants": {
+      "lg.16": 70.28,
+      "lg.256": 96.12,
+      "lg.tc": 100.0,
+      "md.16": 72.86,
+      "md.256": 96.29,
+      "md.tc": 100.0,
+      "sm.16": 76.05,
+      "sm.256": 96.61,
+      "sm.tc": 100.0
+    }
+  },
+  "planet_crystalworld": {
+    "dither": false,
+    "generated_at": "2026-07-02T18:19:49.531658+00:00",
+    "src": "assets/source/celestial/planet_crystalworld.png",
+    "variants": {
+      "lg.16": 62.14,
+      "lg.256": 91.32,
+      "lg.tc": 100.0,
+      "md.16": 62.78,
+      "md.256": 90.97,
+      "md.tc": 100.0,
+      "sm.16": 66.13,
+      "sm.256": 92.05,
+      "sm.tc": 100.0
+    }
+  },
+  "planet_deadworld": {
+    "dither": false,
+    "generated_at": "2026-07-02T18:19:48.998465+00:00",
+    "src": "assets/source/celestial/planet_deadworld.png",
+    "variants": {
+      "lg.16": 60.62,
+      "lg.256": 92.14,
+      "lg.tc": 100.0,
+      "md.16": 63.24,
+      "md.256": 91.77,
+      "md.tc": 100.0,
+      "sm.16": 68.65,
+      "sm.256": 92.99,
+      "sm.tc": 100.0
+    }
+  },
+  "planet_gasgiant": {
+    "dither": false,
+    "generated_at": "2026-07-02T18:19:48.466754+00:00",
+    "src": "assets/source/celestial/planet_gasgiant.png",
+    "variants": {
+      "lg.16": 57.21,
+      "lg.256": 88.15,
+      "lg.tc": 100.0,
+      "md.16": 63.31,
+      "md.256": 90.47,
+      "md.tc": 100.0,
+      "sm.16": 75.84,
+      "sm.256": 94.25,
+      "sm.tc": 100.0
+    }
+  },
+  "planet_iceworld": {
+    "dither": false,
+    "generated_at": "2026-07-02T18:19:50.119121+00:00",
+    "src": "assets/source/celestial/planet_iceworld.png",
+    "variants": {
+      "lg.16": 53.45,
+      "lg.256": 86.54,
+      "lg.tc": 100.0,
+      "md.16": 63.55,
+      "md.256": 89.68,
+      "md.tc": 100.0,
+      "sm.16": 77.0,
+      "sm.256": 94.89,
+      "sm.tc": 100.0
+    }
+  },
+  "planet_ironworld": {
+    "dither": false,
+    "generated_at": "2026-07-02T18:19:51.168565+00:00",
+    "src": "assets/source/celestial/planet_ironworld.png",
+    "variants": {
+      "lg.16": 47.68,
+      "lg.256": 85.99,
+      "lg.tc": 100.0,
+      "md.16": 47.67,
+      "md.256": 86.85,
+      "md.tc": 100.0,
+      "sm.16": 56.59,
+      "sm.256": 87.96,
+      "sm.tc": 100.0
+    }
+  },
+  "planet_lavaworld": {
+    "dither": false,
+    "generated_at": "2026-07-02T18:19:50.647689+00:00",
+    "src": "assets/source/celestial/planet_lavaworld.png",
+    "variants": {
+      "lg.16": 54.62,
+      "lg.256": 90.27,
+      "lg.tc": 100.0,
+      "md.16": 54.9,
+      "md.256": 92.06,
+      "md.tc": 100.0,
+      "sm.16": 55.15,
+      "sm.256": 93.67,
+      "sm.tc": 100.0
+    }
+  },
+  "planet_ocean": {
+    "dither": false,
+    "generated_at": "2026-07-02T18:19:47.969545+00:00",
+    "src": "assets/source/celestial/planet_ocean.png",
+    "variants": {
+      "lg.16": 60.51,
+      "lg.256": 88.84,
+      "lg.tc": 100.0,
+      "md.16": 66.42,
+      "md.256": 91.93,
+      "md.tc": 100.0,
+      "sm.16": 75.89,
+      "sm.256": 94.58,
+      "sm.tc": 100.0
+    }
+  },
+  "planet_terran": {
+    "dither": false,
+    "generated_at": "2026-07-02T18:48:40.376679+00:00",
+    "src": "assets/source/celestial/planet_terran.png",
+    "variants": {
+      "lg.16": 68.45,
+      "lg.256": 93.53,
+      "lg.tc": 100.0,
+      "md.16": 70.19,
+      "md.256": 94.5,
+      "md.tc": 100.0,
+      "sm.16": 74.23,
+      "sm.256": 95.69,
+      "sm.tc": 100.0
+    }
+  },
+  "ship": {
+    "dither": false,
+    "generated_at": "2026-07-02T18:46:11.634467+00:00",
+    "src": "assets/source/ship/ship.png",
+    "variants": {
+      "lg.16": 87.0,
+      "lg.256": 99.39,
+      "lg.tc": 100.0,
+      "md.16": 88.57,
+      "md.256": 99.51,
+      "md.tc": 100.0,
+      "sm.16": 91.31,
+      "sm.256": 99.65,
+      "sm.tc": 100.0
+    }
+  },
+  "star_sun": {
+    "dither": false,
+    "generated_at": "2026-07-02T18:46:11.170429+00:00",
+    "src": "assets/source/celestial/star_sun.png",
+    "variants": {
+      "lg.16": 58.1,
+      "lg.256": 85.25,
+      "lg.tc": 100.0,
+      "md.16": 63.95,
+      "md.256": 88.83,
+      "md.tc": 100.0,
+      "sm.16": 72.24,
+      "sm.256": 93.11,
+      "sm.tc": 100.0
+    }
+  }
+}

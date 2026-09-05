@@ -182,6 +182,60 @@ pub struct TechDef {
     pub unlock: TechUnlock,
 }
 
+// ── Quest (M6) ────────────────────────────────────────────────────────────
+/// Kondisi auto-advance stage quest (pola SAMA `game::tutorial`'s step predicate, tp data-
+/// driven — hook nyata ke sistem existing: riset (`TechCompleted`), travel (`ShipTraveling`),
+/// prestige (`WarpJumped`). `Manual` = stage butuh pilihan PLAYER (`choose_branch`), tak
+/// pernah auto-advance sendiri (dipakai stage dgn >1 branch — titik cabang nyata).
+#[derive(Clone, Debug, Deserialize)]
+pub enum QuestReq {
+    None,
+    TechCompleted(String),
+    ShipTraveling,
+    WarpJumped,
+    Manual,
+}
+
+/// Efek nyata ke `GameState` saat stage/branch selesai — reuse field EXISTING (credits/warp
+/// cores), bukan sistem reward baru.
+#[derive(Clone, Debug, Deserialize)]
+pub enum QuestEffect {
+    GrantCredits(f64),
+    GrantWarpCores(u64),
+}
+
+/// Satu opsi di stage cabang (>1 branch = titik keputusan NYATA, hasil beda per pilihan).
+#[derive(Clone, Debug, Deserialize)]
+pub struct QuestBranchDef {
+    pub label: String,
+    pub next_stage: String,
+    #[serde(default)]
+    pub effects: Vec<QuestEffect>,
+}
+
+#[derive(Clone, Debug, Deserialize)]
+pub struct QuestStageDef {
+    pub id: String,
+    pub text: String,
+    pub requirement: QuestReq,
+    #[serde(default)]
+    pub effects: Vec<QuestEffect>,
+    /// Kosong = stage terminal (quest selesai di sini). 1 = auto-chain linear ke `next_stage`
+    /// (label diabaikan). >1 = titik cabang NYATA, butuh `choose_branch` (player pick).
+    #[serde(default)]
+    pub branches: Vec<QuestBranchDef>,
+}
+
+#[derive(Clone, Debug, Deserialize)]
+pub struct QuestDef {
+    pub id: String,
+    /// Grup arc naratif (mis. "pioneer"/"warp_frontier") — R6's "≥2 arc" dikelompokkan lewat
+    /// field ini, bukan modul/file terpisah per arc.
+    pub arc: String,
+    pub title: String,
+    pub stages: Vec<QuestStageDef>,
+}
+
 // ── Registry & Content ───────────────────────────────────────────────────────
 /// Entri punya id string stabil → di-intern jadi handle u32.
 pub trait HasId {
@@ -209,6 +263,11 @@ impl HasId for BuildingDef {
     }
 }
 impl HasId for TechDef {
+    fn id_str(&self) -> &str {
+        &self.id
+    }
+}
+impl HasId for QuestDef {
     fn id_str(&self) -> &str {
         &self.id
     }
@@ -259,4 +318,5 @@ pub struct Content {
     pub recipes: Registry<RecipeDef>,
     pub buildings: Registry<BuildingDef>,
     pub techs: Registry<TechDef>,
+    pub quests: Registry<QuestDef>,
 }

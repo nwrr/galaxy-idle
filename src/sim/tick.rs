@@ -95,6 +95,11 @@ pub fn step(state: &mut GameState, content: &Content) -> TickReport {
     crate::game::prestige::apply_anchor_feed(state, content);
     // 8. Merchant: nonaktifkan window yang habis. 9. Buff expiry → ditunda (butuh field buff).
     crate::game::events::update_merchant(&mut state.merchant, state.tick);
+    // M3: onboarding auto-advance — dicek tiap tick (bukan cuma di titik aksi tertentu) spy
+    // step maju genuinely krn KONDISI nyata terpenuhi, bukan trigger manual per-lokasi yg bisa
+    // kelewat (mis. kalau dicek cuma di `handle_key`'s build arm, aksi via jalur lain -- kalau
+    // ada -- tak ke-cover).
+    crate::game::tutorial::advance(state);
 
     report
 }
@@ -162,6 +167,8 @@ mod tests {
             merchant: Default::default(),
             events: Default::default(),
             settings: Default::default(),
+            tutorial_step: None,
+            quests: Default::default(),
         }
     }
 

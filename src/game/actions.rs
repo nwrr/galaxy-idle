@@ -40,12 +40,38 @@ fn credits_id(content: &Content) -> Option<ResourceId> {
     content.resources.id("credits").map(ResourceId)
 }
 
-/// Resolusi (string,jumlah) → (ResourceId,jumlah), di-skala `scale`.
-fn resolve_cost(content: &Content, pairs: &[(String, f64)], scale: f64) -> Vec<(ResourceId, f64)> {
+/// Resolusi (string,jumlah) → (ResourceId,jumlah), di-skala `scale`. `pub(crate)` M14.9: dipakai
+/// jg UI cost-preview (`panels::planet`), bukan cuma internal `build_factory`/`upgrade_factory`.
+pub(crate) fn resolve_cost(
+    content: &Content,
+    pairs: &[(String, f64)],
+    scale: f64,
+) -> Vec<(ResourceId, f64)> {
     pairs
         .iter()
         .filter_map(|(n, q)| content.resources.id(n).map(|h| (ResourceId(h), q * scale)))
         .collect()
+}
+
+/// M14.9: dipisah dari `try_pay` (bukan duplikasi cek) — dipakai NYATA jalur mutasi (`try_pay`
+/// di bawah) DAN preview afford read-only di UI (`panels::planet`'s cost+afford indicator).
+/// Satu sumber logic "cukup/tidak", bukan 2 tempat yg bisa divergen.
+pub(crate) fn can_afford(
+    state: &GameState,
+    gi: usize,
+    pi: usize,
+    cost: &[(ResourceId, f64)],
+    credits: Option<ResourceId>,
+) -> bool {
+    let planet = &state.galaxies[gi].planets[pi];
+    cost.iter().all(|(r, amt)| {
+        let have = if Some(*r) == credits {
+            state.credits
+        } else {
+            planet.stockpile.get(r).copied().unwrap_or(0.0)
+        };
+        have >= *amt
+    })
 }
 
 /// Cek mampu lalu bayar dari credits + stockpile planet. Tak memotong bila kurang.
@@ -56,16 +82,8 @@ fn try_pay(
     cost: &[(ResourceId, f64)],
     credits: Option<ResourceId>,
 ) -> Result<(), ActionError> {
-    let planet = &state.galaxies[gi].planets[pi];
-    for (r, amt) in cost {
-        let have = if Some(*r) == credits {
-            state.credits
-        } else {
-            planet.stockpile.get(r).copied().unwrap_or(0.0)
-        };
-        if have < *amt {
-            return Err(ActionError::Insufficient);
-        }
+    if !can_afford(state, gi, pi, cost, credits) {
+        return Err(ActionError::Insufficient);
     }
     let planet = &mut state.galaxies[gi].planets[pi];
     for (r, amt) in cost {
@@ -146,6 +164,79 @@ fn next_factory_id(state: &GameState, gi: usize, pi: usize) -> u32 {
         .map(|f| f.id.0)
         .max()
         .map_or(0, |m| m + 1)
+}
+
+/// M14.12: daftar building yg BISA dibangun di planet `pi` SEKARANG — filter tier planet,
+/// tech unlocked (`research::building_available`), slot cukup, DAN kind genuinely buildable
+/// (`Storage`/`Special` selalu `Err(NotBuildable)` di `build_factory`, jadi disaring di sini
+/// jg biar list tak tampilkan opsi yg pasti gagal bila dipilih).
+pub fn buildable_options(state: &GameState, content: &Content, pi: usize) -> Vec<BuildingId> {
+    let Ok(gi) = active_gi(state) else {
+        return Vec::new();
+    };
+    let planet = &state.galaxies[gi].planets[pi];
+    let free = planet.factory_slots.iter().filter(|s| s.is_none()).count();
+    content
+        .buildings
+        .iter()
+        .enumerate()
+        .filter(|(_, b)| {
+            matches!(
+                b.kind,
+                BuildingKind::Extractor | BuildingKind::Refinery | BuildingKind::ResearchLab
+            )
+        })
+        .filter(|(_, b)| planet.tier >= b.min_planet_tier)
+        .filter(|(_, b)| b.slot_cost as usize <= free)
+        .filter(|(_, b)| crate::game::research::building_available(state, content, &b.id))
+        .map(|(h, _)| BuildingId(h as u32))
+        .collect()
+}
+
+/// M14.12: bangun `building` di `slot`, auto-pilih node/recipe (bukan minta user pilih 2 kali
+/// — dicek `BuildingDef` TAK py field pembatas resource-per-node, jadi Extractor MANA PUN bisa
+/// bind ke node MANA PUN; default deterministik: node PERTAMA yg blm dipakai extractor lain).
+/// Refinery: recipe PERTAMA di `bdef.recipes` yg genuinely `recipe_available` (bukan cuma
+/// recipe pertama SEADANYA — kalau recipe pertama msh terkunci tech tp recipe lain di building
+/// yg sama SUDAH ada, pilih itu, biar tak gagal `TechLocked` sia-sia padahal ada alternatif).
+pub fn build_picked(
+    state: &mut GameState,
+    content: &Content,
+    pi: usize,
+    slot: usize,
+    building: BuildingId,
+) -> Result<(), ActionError> {
+    let gi = active_gi(state)?;
+    let bdef = content.buildings.get(building.0);
+    let node = match bdef.kind {
+        BuildingKind::Extractor => {
+            let used: std::collections::HashSet<NodeId> = state.galaxies[gi].planets[pi]
+                .factory_slots
+                .iter()
+                .flatten()
+                .filter_map(|f| match f.kind {
+                    FactoryKind::Extractor { node } => Some(node),
+                    _ => None,
+                })
+                .collect();
+            state.galaxies[gi].planets[pi]
+                .nodes
+                .iter()
+                .find(|n| !used.contains(&n.id))
+                .map(|n| n.id)
+        }
+        _ => None,
+    };
+    let recipe = match bdef.kind {
+        BuildingKind::Refinery => bdef
+            .recipes
+            .iter()
+            .filter_map(|name| content.recipes.id(name).map(|h| (name, RecipeId(h))))
+            .find(|(name, _)| crate::game::research::recipe_available(state, content, name))
+            .map(|(_, rid)| rid),
+        _ => None,
+    };
+    build_factory(state, content, pi, slot, building, node, recipe)
 }
 
 /// Naikkan level factory (biaya = base_cost building × GROWTH^level).
@@ -242,6 +333,8 @@ mod tests {
             merchant: Default::default(),
             events: Default::default(),
             settings: Default::default(),
+            tutorial_step: None,
+            quests: Default::default(),
         }
     }
 
@@ -325,6 +418,72 @@ mod tests {
         assert_eq!(
             build_factory(&mut st, &c, 0, 0, drill, Some(NodeId(0)), None),
             Err(ActionError::SlotOccupied)
+        );
+    }
+
+    /// M14.12: `buildable_options` HARUS saring tier (arc_furnace tier 2 tak boleh muncul di
+    /// planet tier 1) DAN HARUS saring Storage/Special (`storage_depot`/`anchor_booster` —
+    /// keduanya SELALU `Err(NotBuildable)` di `build_factory`, list tak boleh tawarkan opsi
+    /// yg pasti gagal).
+    #[test]
+    fn buildable_options_filters_tier_and_kind() {
+        let c = content();
+        let st = state_t(1, 3);
+        let opts = buildable_options(&st, &c, 0);
+        let names: Vec<&str> = opts
+            .iter()
+            .map(|&b| c.buildings.get(b.0).id.as_str())
+            .collect();
+        assert!(names.contains(&"mining_drill"), "tier 1 harus muncul");
+        assert!(
+            !names.contains(&"arc_furnace"),
+            "tier 2 TAK boleh muncul di planet tier 1: {names:?}"
+        );
+        assert!(
+            !names.contains(&"storage_depot") && !names.contains(&"anchor_booster"),
+            "Storage/Special TAK bisa dibangun via build_factory, tak boleh ditawarkan: {names:?}"
+        );
+    }
+
+    /// M14.12: `build_picked` utk Extractor HARUS auto-bind ke node PERTAMA (dicek langsung
+    /// hasil `FactoryKind::Extractor{node}`, bukan cuma "build sukses tanpa cek node mana").
+    #[test]
+    fn build_picked_extractor_auto_binds_node() {
+        let c = content();
+        let mut st = state_t(1, 3);
+        st.galaxies[0].planets[0]
+            .nodes
+            .push(crate::game::state::ResourceNode {
+                id: NodeId(7),
+                resource: ResourceId(c.resources.id("iron").unwrap()),
+                richness: 1.0,
+                level: 1,
+            });
+        let drill = BuildingId(c.buildings.id("mining_drill").unwrap());
+        build_picked(&mut st, &c, 0, 0, drill).unwrap();
+        let f = st.galaxies[0].planets[0].factory_slots[0].unwrap();
+        assert!(
+            matches!(f.kind, FactoryKind::Extractor { node } if node == NodeId(7)),
+            "harus auto-bind ke node yg ada (id 7), dpt {:?}",
+            f.kind
+        );
+    }
+
+    /// M14.12: `build_picked` utk Refinery HARUS auto-pilih recipe PERTAMA yg genuinely
+    /// available (smelter: smelt_iron TAK tech-locked, beda dari steel_mill_bld yg recipe
+    /// pertamanya "steel_mill" TERKUNCI manu_steel — dicek recipe yg kepilih PERSIS).
+    #[test]
+    fn build_picked_refinery_auto_picks_available_recipe() {
+        let c = content();
+        let mut st = state_t(1, 3);
+        let smelter = BuildingId(c.buildings.id("smelter").unwrap());
+        build_picked(&mut st, &c, 0, 0, smelter).unwrap();
+        let f = st.galaxies[0].planets[0].factory_slots[0].unwrap();
+        let expected = RecipeId(c.recipes.id("smelt_iron").unwrap());
+        assert!(
+            matches!(f.kind, FactoryKind::Refinery { recipe } if recipe.0 == expected.0),
+            "harus pilih smelt_iron (recipe pertama & tak terkunci), dpt {:?}",
+            f.kind
         );
     }
 }

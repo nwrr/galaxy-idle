@@ -12,6 +12,7 @@ Aturan:
     WARN bila underfill (<60% box) — bentuk mungkin terlalu kecil/"kurang mirip".
 Exit code != 0 bila ada FAIL.
 """
+import json
 import os
 import re
 import sys
@@ -19,6 +20,7 @@ import unicodedata
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MANIFEST = os.path.join(ROOT, "assets", "manifest.ron")
+FIDELITY = os.path.join(ROOT, "assets", "sprites", "_fidelity.json")
 
 ENTRY_RE = re.compile(
     r'id:\s*"([^"]+)"\s*,\s*path:\s*"([^"]+)"\s*,\s*kind:\s*(\w+)\s*,\s*w:\s*(\d+)\s*,\s*h:\s*(\d+)'
@@ -59,6 +61,29 @@ def measure(path):
     return w, h, lines
 
 
+def load_fidelity():
+    """`assets/sprites/_fidelity.json` (M10.6/M11.2) — dict per base, `None`/`{}` bila belum ada
+    laporan (mis. base blm pernah dikonversi via `gen_assets.py convert`, msh render prosedural
+    murni tanpa aset ComfyUI — bukan error, cuma tak ada skor utk dilaporkan)."""
+    if not os.path.isfile(FIDELITY):
+        return {}
+    with open(FIDELITY, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def fidelity_score(rel, reports):
+    """`rel` (mis. `sprites/planet_terran/lg.tc.ans`) → skor fidelitas varian itu spesifik dari
+    laporan, atau `None` bila base/varian tak ada di laporan (M11.6)."""
+    m = re.match(r"sprites/(.+)/(sm|md|lg)\.(tc|256|16)\.ans$", rel)
+    if not m:
+        return None
+    base, size, depth = m.groups()
+    entry = reports.get(base)
+    if not entry:
+        return None
+    return entry.get("variants", {}).get(f"{size}.{depth}")
+
+
 def check_variants(rel):
     """rel = path canonical celestial (mis sprites/planet_ocean/lg.tc.ans).
     → list varian yang hilang dari 9 (sm/md/lg × tc/256/16)."""
@@ -78,6 +103,7 @@ def check_variants(rel):
 def main():
     wanted = set(sys.argv[1:])
     entries = load_entries()
+    fidelity_reports = load_fidelity()
     if wanted:
         entries = [e for e in entries if e[0] in wanted]
         if not entries:
@@ -120,6 +146,9 @@ def main():
             status = "FAIL"
             notes.append(f"varian hilang: {', '.join(missing)}")
             fails += 1
+        score = fidelity_score(rel, fidelity_reports)
+        if score is not None:
+            notes.append(f"fidelitas={score:.2f}")
         note = ("  " + "; ".join(notes)) if notes else ""
         print(f"{status} {aid:22} {rel:34} {mw}x{mh} (box {w}x{h}){note}")
     print(f"\n{'OK' if fails == 0 else 'GAGAL'}: {len(entries)} dicek, {fails} FAIL")

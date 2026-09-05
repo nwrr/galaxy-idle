@@ -1,0 +1,24 @@
+┌ STELLAR IDLE ────────────────────────────────────────────┐
+│Menu | Planet | Research | Galaxy | Warp                  │
+│┌────────────────────────────────────────────────────────┐│
+││RESEARCH TERMINAL                                       ││
+││Data/sec: +10   Data total: 50                          ││
+││ACTIVE: manu_steel [Manufacturing]                      ││
+││[######....] 60%                                        ││
+││Data: 300/500  Time: 72/120s (48s left)                 ││
+││                                                        ││
+││► [--] ext_deep_core   cost: 8.0k Data  time: 1,200s    ││
+││  [OK] ext_efficiency  cost: 4.0k Data  time: 600s      ││
+││  [>>] manu_steel      cost: 500 Data  time: 120s       ││
+││  [--] manu_titanium   cost: 2.0k Data  time: 300s      ││
+││  [--] aero_warp_mk2   cost: 5.0k Data  time: 600s      ││
+││  [--] aero_warp_mk3   cost: 25.0k Data  time: 1,800s   ││
+││  [--] astro_far_warp  cost: 20.0k Data  time: 2,400s   ││
+││[j/k]Pilih  [Enter]Mulai riset  [p]Planet  [g]Galaxy    ││
+││                                                        ││
+││                                                        ││
+││                                                        ││
+││                                                        ││
+│└────────────────────────────────────────────────────────┘│
+│g:Galaxy p:Planet r:Research m:Merchant S:Settings ?:Help │
+└──────────────────────────────────────────────────────────┘

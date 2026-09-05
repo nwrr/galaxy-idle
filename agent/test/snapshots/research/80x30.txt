@@ -1,0 +1,30 @@
+┌ STELLAR IDLE ────────────────────────────────────────────────────────────────┐
+│Earth  |  T+00:00:00  |  Ship: Idle                                           │
+│┌────────────┐┌──────────────────────────────────────────────────────────────┐│
+││OPTIONS     ││RESEARCH TERMINAL                                             ││
+││NAVIGATION  ││Data/sec: +10   Data total: 50                                ││
+││  Galaxy Map││Warp Tier: 3 | Next: aero_warp_mk2 -> Tier 6                  ││
+││  Planets   ││ACTIVE: manu_steel [Manufacturing]                            ││
+││   * Earth  ││[######....] 60%                                              ││
+││   o Mars   ││Data: 300/500  Time: 72/120s (48s left)                       ││
+││   o Jupiter││                                                              ││
+││  Fleet     ││EXTRACTION (2)                                                ││
+││PROGRESS    ││► [--] ext_deep_core   cost: 8.0k Data  time: 1,200s          ││
+││  Research  ││  [OK] ext_efficiency  cost: 4.0k Data  time: 600s            ││
+││  Merchant  ││MANUFACTURING (2)                                             ││
+││SYSTEM      ││  [>>] manu_steel      cost: 500 Data  time: 120s             ││
+││  Settings  ││  [--] manu_titanium   cost: 2.0k Data  time: 300s            ││
+││  Save (Ctrl││AEROSPACE (2)                                                 ││
+││            ││  [--] aero_warp_mk2   cost: 5.0k Data  time: 600s            ││
+││            ││  [--] aero_warp_mk3   cost: 25.0k Data  time: 1,800s         ││
+││            ││ASTROCARTOGRAPHY (1)                                          ││
+││            ││  [--] astro_far_warp  cost: 20.0k Data  time: 2,400s         ││
+││            ││                                                              ││
+││            ││DETAIL: ext_deep_core [Locked]                                ││
+││            ││Efek: Buka bangunan: deep_core_miner                          ││
+││            ││Biaya: 8.0k Data, 1,200s                                      ││
+││            ││Depends on: manu_steel                                        ││
+││            ││[j/k]Pilih  [Enter]Mulai riset  [p]Planet  [g]Galaxy          ││
+││            ││                                                              ││
+│└────────────┘└──────────────────────────────────────────────────────────────┘│
+└──────────────────────────────────────────────────────────────────────────────┘

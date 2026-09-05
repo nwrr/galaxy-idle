@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
-"""Auto-generate 21 portrait karakter via API ComfyUI (Z-Image Turbo) → simpan PNG sumber.
+"""Auto-generate asset via API ComfyUI → simpan PNG sumber. Multi-set (M05.4): tiap set =
+`prompts/<set>.json` (skema `comfyui/README.md` §Skema prompt-set), workflow diresolusi dari
+field `workflow` di set itu sendiri (`workflows/<workflow>.json`).
 
 ComfyUI HARUS sudah berjalan (default API http://127.0.0.1:8188). Script ini tidak menjalankan
-ComfyUI; ia memposting workflow_zimage_turbo_api.json untuk tiap prompt di prompts/characters.json,
-lalu mengunduh hasil ke assets/source/characters/<group>/<filename>.
+ComfyUI; ia memposting workflow tiap item ke server, lalu mengunduh hasil ke
+assets/source/<set>/[<group>/]<filename>.
 
 Usage:
-  python3 comfyui/generate.py                     # generate semua 21
-  python3 comfyui/generate.py --only char_male_01
-  python3 comfyui/generate.py --group alien
+  python3 comfyui/generate.py                        # --set characters (default), semua item
+  python3 comfyui/generate.py --set characters --only char_male_01
+  python3 comfyui/generate.py --set characters --group alien
   python3 comfyui/generate.py --size 832x1216 --steps 6
-  python3 comfyui/generate.py --dry-run           # tampilkan rencana, tanpa memanggil server
+  python3 comfyui/generate.py --dry-run               # tampilkan rencana, tanpa memanggil server
 
 Lalu konversi ke ASCII:
   python3 scripts/gen_assets.py all && python3 scripts/check_assets.py
@@ -25,9 +27,6 @@ import uuid
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-OUT_BASE = os.path.join(ROOT, "assets", "source", "characters")
-WORKFLOW = os.path.join(HERE, "workflow_zimage_turbo_api.json")
-PROMPTS = os.path.join(HERE, "prompts", "characters.json")
 
 
 def http_json(url, payload):
@@ -84,42 +83,73 @@ def build_graph(tmpl, prompt, seed, w, h, steps, prefix):
     return g
 
 
+def load_prompts(name):
+    """Baca `prompts/<name>.json` saja (tanpa workflow) — dipakai `verify.py` (M07) juga."""
+    prompts_path = os.path.join(HERE, "prompts", f"{name}.json")
+    if not os.path.isfile(prompts_path):
+        raise SystemExit(f"Set '{name}' tak ditemukan: {prompts_path}")
+    return json.load(open(prompts_path))
+
+
+def load_set(name):
+    """Baca `prompts/<name>.json` + resolusi workflow-nya (`workflows/<workflow>.json`)."""
+    cfg = load_prompts(name)
+    workflow_path = os.path.join(HERE, "workflows", f"{cfg['workflow']}.json")
+    if not os.path.isfile(workflow_path):
+        raise SystemExit(f"Workflow '{cfg['workflow']}' tak ditemukan: {workflow_path}")
+    tmpl = json.load(open(workflow_path))
+    return cfg, tmpl
+
+
+def item_output_path(cfg, item):
+    """Path output PNG item (`assets/source/<set>/[<group>/]<filename>`) — satu sumber kebenaran
+    dipakai `generate.py` & `verify.py` (M07), jangan duplikasi logika ini di tempat lain."""
+    out_base = os.path.join(ROOT, "assets", "source", cfg["set"])
+    out_dir = os.path.join(out_base, item["group"]) if "group" in item else out_base
+    filename = item.get("filename", f"{item['id']}.png")
+    return os.path.join(out_dir, filename)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--server", default="http://127.0.0.1:8188")
-    ap.add_argument("--only", help="id karakter tunggal, mis. char_alien_03")
-    ap.add_argument("--group", choices=["male", "female", "alien"])
-    ap.add_argument("--size", help="WxH, mis. 1024x1024 (override characters.json)")
+    ap.add_argument("--set", default="characters", help="nama prompt-set di prompts/<set>.json")
+    ap.add_argument("--only", help="id item tunggal, mis. char_alien_03")
+    ap.add_argument("--group", help="filter field 'group' item (mis. male/female/alien)")
+    ap.add_argument("--size", help="WxH, mis. 1024x1024 (override prompts/<set>.json)")
     ap.add_argument("--steps", type=int, default=4)
+    ap.add_argument("--seed", type=int,
+                     help="override seed semua item terpilih (regen: pakai bareng --only)")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
-    tmpl = json.load(open(WORKFLOW))
-    cfg = json.load(open(PROMPTS))
+    cfg, tmpl = load_set(args.set)
     style = cfg["style"]
     size = args.size or cfg.get("size", "1024x1024")
     w, h = (int(x) for x in size.lower().split("x"))
 
-    chars = cfg["characters"]
+    items = cfg["items"]
     if args.only:
-        chars = [c for c in chars if c["id"] == args.only]
+        items = [c for c in items if c["id"] == args.only]
     if args.group:
-        chars = [c for c in chars if c["group"] == args.group]
-    if not chars:
-        print("Tidak ada karakter cocok filter."); return
+        items = [c for c in items if c.get("group") == args.group]
+    if not items:
+        print("Tidak ada item cocok filter."); return
 
     client_id = uuid.uuid4().hex
-    print(f"Server {args.server} | {len(chars)} karakter | {w}x{h} | steps {args.steps}\n")
+    print(f"Set '{cfg['set']}' | Server {args.server} | {len(items)} item | "
+          f"{w}x{h} | steps {args.steps}\n")
 
-    for c in chars:
+    for c in items:
         positive = f'{c["subject"]}, {style}'
-        out_dir = os.path.join(OUT_BASE, c["group"])
-        out_path = os.path.join(out_dir, c["filename"])
+        seed = args.seed if args.seed is not None else c["seed"]
+        out_path = item_output_path(cfg, c)
+        out_dir = os.path.dirname(out_path)
         if args.dry_run:
-            print(f"[dry] {c['id']:16} seed={c['seed']:>8} -> {os.path.relpath(out_path, ROOT)}")
+            print(f"[dry] {c['id']:16} seed={seed:>8} -> {os.path.relpath(out_path, ROOT)}")
             print(f"      {positive[:100]}...")
             continue
-        graph = build_graph(tmpl, positive, c["seed"], w, h, args.steps,
+        graph = build_graph(tmpl, positive, seed, w, h, args.steps,
                             f"galaxy_idle/{c['id']}")
         try:
             pid = queue_prompt(args.server, graph, client_id)

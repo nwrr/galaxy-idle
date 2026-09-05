@@ -1,0 +1,12 @@
+{
+  "set": "galaxy",
+  "workflow": "workflow_zimage_turbo_api",
+  "style": "N-body star cluster simulation render, sparse discrete point particles, mostly empty black background, minimal, scientific visualization, no nebula clouds, no dust texture, no smooth gradients, sharp tiny dots only",
+  "negative": "blurry, low contrast, watermark, text, logo, frame, UI panel, chart, numbers, cartoonish, lowres, washed out, nebula cloud, dust lane, smooth gradient glow, photorealistic astrophotography, dense filled texture, painting, illustration",
+  "size": "1024x1024",
+  "items": [
+    { "id": "galaxy", "seed": 4000002,
+      "subject": "sparse oval-shaped cluster of thousands of tiny discrete blue and cyan star points scattered thinly against a vast empty black void, brighter denser concentration of points near the center fading to isolated individual specks at the edges, viewed from a slightly tilted angle, no visible spiral arm structure, no continuous cloud or nebula shading, just individual point-like stars of varying brightness, mostly empty dark space dominates the frame",
+      "ref": "galaxy_2.png" }
+  ]
+}

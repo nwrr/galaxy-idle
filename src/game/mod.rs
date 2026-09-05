@@ -11,4 +11,5 @@ pub mod prestige;
 pub mod research;
 pub mod ship;
 pub mod state;
+pub mod tutorial;
 pub mod world;

@@ -41,3 +41,30 @@ fn app_renders_every_breakpoint_without_panic() {
         }
     }
 }
+
+/// M12.9: guard lebar minimum — ukuran EKSTREM (di bawah breakpoint Minimal terkecil, sampai
+/// 1×1) tak boleh panic. `shell_full` (M12) pakai kolom `Length` tetap (22/18) yg SECARA TEORI
+/// bisa jadi masalah bila area lebih sempit dari totalnya, tp `layout_mode` menggerbang
+/// `shell_full` hanya di lebar≥100 jadi tak pernah kejadian nyata — test ini tetap MEMBUKTIKAN
+/// ratatui `Layout` gagal-aman (clip/kompres, bukan panic) di ekstrem, bukan cuma diasumsikan.
+#[test]
+fn app_renders_extreme_tiny_sizes_without_panic() {
+    let app = App::demo();
+    let sizes: [(u16, u16); 8] = [
+        (1, 1),
+        (2, 2),
+        (5, 5),
+        (10, 5),
+        (20, 8),
+        (39, 11),
+        (40, 12),
+        (99, 29),
+    ];
+    for (w, h) in sizes {
+        let mut term = Terminal::new(TestBackend::new(w, h)).unwrap();
+        for view in VIEWS {
+            term.draw(|f| galaxy_idle::ui::draw_view(f, &app, view))
+                .unwrap();
+        }
+    }
+}

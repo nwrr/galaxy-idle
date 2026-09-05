@@ -18,6 +18,15 @@ pub struct Theme {
     pub alert: Color,
     pub good: Color,
     pub neutral: Color,
+    /// Warna teks default terminal (dipakai rasterizer utk `Color::Reset` di posisi fg).
+    pub text: Color,
+    /// Warna latar default terminal (dipakai rasterizer utk `Color::Reset` di posisi bg).
+    pub bg: Color,
+    /// M16.3: biru gelap utk tepi galaksi (`galaxy_anim`'s zona Edge) — checklist minta gradien
+    /// "putih-biru core → biru GELAP tepi", dulu Edge pakai `rare` (Magenta, warna tier resource
+    /// yg TAK ADA hubungan semantik dgn nebula/edge galaksi, cuma kebetulan field ADA). Field
+    /// BARU (bukan reuse) krn tak ada field lain yg genuinely "biru gelap" di semua varian tema.
+    pub nebula: Color,
 }
 
 /// Bangun palet dari pilihan tema.
@@ -34,6 +43,9 @@ pub fn theme(choice: ThemeChoice) -> Theme {
             alert: Color::Red,
             good: Color::Green,
             neutral: Color::Yellow,
+            text: Color::White,
+            bg: Color::Black,
+            nebula: Color::Rgb(40, 50, 130),
         },
         ThemeChoice::HighContrast => Theme {
             header: Color::White,
@@ -46,6 +58,9 @@ pub fn theme(choice: ThemeChoice) -> Theme {
             alert: Color::LightRed,
             good: Color::LightGreen,
             neutral: Color::LightYellow,
+            text: Color::White,
+            bg: Color::Black,
+            nebula: Color::LightBlue,
         },
         ThemeChoice::Mono => {
             let w = Color::White;
@@ -60,6 +75,9 @@ pub fn theme(choice: ThemeChoice) -> Theme {
                 alert: w,
                 good: w,
                 neutral: w,
+                text: w,
+                bg: Color::Black,
+                nebula: w,
             }
         }
     }

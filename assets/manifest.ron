@@ -26,6 +26,11 @@
     ( id: "planet_asteroidbelt",path: "sprites/planet_asteroidbelt/lg.tc.ans",kind: Sprite, w: 64, h: 32 ),
     ( id: "star_sun",           path: "sprites/star_sun/lg.tc.ans",           kind: Sprite, w: 64, h: 32 ),
     ( id: "ship",               path: "sprites/ship/lg.tc.ans",               kind: Sprite, w: 64, h: 32 ),
+    // galaxy = fallback ANSI non-sixel utk galaxy view (M17 pakai sixel/kitty saat didukung).
+    ( id: "galaxy",             path: "sprites/galaxy/lg.tc.ans",             kind: Sprite, w: 64, h: 32 ),
+    // banner = emblem dekoratif abstrak ComfyUI (BUKAN judul terbaca — itu banner_title/_small
+    // di atas, ASCII hand-authored, tetap dipakai apa adanya).
+    ( id: "banner_emblem",      path: "sprites/banner/lg.tc.ans",             kind: Sprite, w: 64, h: 32 ),
 
     // -- Frame UI (dinamis) --
     ( id: "frame_full",     path: "ui/frame_full.txt",       kind: Frame, w: 0, h: 0 ),

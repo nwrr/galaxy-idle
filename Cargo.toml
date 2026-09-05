@@ -14,3 +14,9 @@ ron = "0.8"
 ratatui-image = { version = "9", default-features = false, features = ["crossterm", "image-defaults"] }
 image = "0.25"        # decode PNG portrait
 ansi-to-tui = "7"     # parse .ans sprite celestial half-block → ratatui Text/Style
+ab_glyph = "0.2"      # font rasterisasi utk Buffer→PNG screenshot (Phase 2)
+glam = "0.33"         # vektor 3D utk galaxy_sim (posisi bintang/anchor, M20.8-followup Phase 0)
+bytemuck = { version = "1.25", features = ["derive"] } # repr(C)+Pod StarGpu/Uniforms (galaxy_sim Phase 1)
+rayon = "1.12"        # CPU render backend paralel (accumulate+tonemap, galaxy_sim Phase 3)
+wgpu = { version = "30", default-features = false, features = ["std", "parking_lot", "vulkan", "gles", "metal", "dx12", "wgsl"] } # GPU compute (galaxy_sim Phase 4)
+pollster = "0.4"      # blok sinkron atas wgpu async (init+readback, galaxy_sim Phase 4)

@@ -4,8 +4,7 @@
 //! string (lihat [`dto`]). Atomic: tulis `*.tmp` lalu `rename`. Lokasi:
 //! `${XDG_DATA_HOME:-~/.local/share}/galaxy-idle/save.json`.
 //!
-//! NOTE(scaffold): `allow(dead_code)` — dipanggil `app::run` autosave/quit (wiring M7 lanjut).
-#![allow(dead_code)]
+//! Dipanggil `App::manual_save` (`app.rs`'s `event_loop`: autosave berkala, quit, `Ctrl+S`).
 
 pub mod dto;
 
@@ -86,10 +85,26 @@ pub fn read_from(path: &Path, content: &Content) -> Result<GameState, SaveError>
     Ok(dto::from_save(&data, content))
 }
 
-/// Migrasi save lama → skema saat ini, berurutan per versi. Saat ini hanya v1 (no-op).
+/// Migrasi save lama → skema saat ini, berurutan per versi.
 /// Tambah cabang `if version < N { ... ubah value ke skema N ... }` saat `SAVE_VERSION` naik.
-fn migrate(_value: &mut serde_json::Value, _version: u32) {
-    // v1 = skema terbaru; belum ada langkah migrasi.
+fn migrate(value: &mut serde_json::Value, version: u32) {
+    // M3: v1→v2, tambah `tutorial_step`. Save v1 TAK py field ini di JSON sama sekali —
+    // pemain existing dianggap sudah lewat onboarding (`null`/`None`), bukan dipaksa ulang
+    // dr step 0. Real migrasi PERTAMA lewat fungsi ini (dulu genuinely no-op).
+    if version < 2
+        && let Some(obj) = value.as_object_mut()
+    {
+        obj.entry("tutorial_step")
+            .or_insert(serde_json::Value::Null);
+    }
+    // M6: v2→v3, tambah `quests` (`QuestState` kosong — save lama blm py quest apa pun aktif,
+    // bukan diam2 ditandai selesai/gagal).
+    if version < 3
+        && let Some(obj) = value.as_object_mut()
+    {
+        obj.entry("quests")
+            .or_insert_with(|| serde_json::json!({ "active": {}, "completed": [], "choices": {} }));
+    }
 }
 
 #[cfg(test)]
@@ -110,13 +125,18 @@ mod tests {
 
     #[test]
     fn save_path_uses_xdg() {
-        // SAFETY: single-threaded test; set & restore env var.
-        unsafe { std::env::set_var("XDG_DATA_HOME", "/tmp/xdgtest") };
-        assert_eq!(
-            save_path(),
-            PathBuf::from("/tmp/xdgtest/galaxy-idle/save.json")
-        );
-        unsafe { std::env::remove_var("XDG_DATA_HOME") };
+        // `XDG_DATA_HOME` proses-global. Test ini dulu set/remove-nya BEBAS LOCK, jadi balapan
+        // dgn test title di `app.rs` yg juga pakai env var itu -- `save_path()` mereka sesekali
+        // resolve ke `/tmp/xdgtest` (yg bisa berisi save sisa run lain) → flake. Pinjam lock yg
+        // sama (`with_temp_save_dir`), set nilai spesifik DI DALAM closure-nya.
+        crate::app::tests::with_temp_save_dir(|| {
+            // SAFETY: di dalam ENV_LOCK — tak ada test lain menyentuh env var ini bersamaan.
+            unsafe { std::env::set_var("XDG_DATA_HOME", "/tmp/xdgtest") };
+            assert_eq!(
+                save_path(),
+                PathBuf::from("/tmp/xdgtest/galaxy-idle/save.json")
+            );
+        });
     }
 
     #[test]
@@ -187,7 +207,7 @@ mod tests {
         write_to(&path, &app.state, &c).unwrap();
         let text = std::fs::read_to_string(&path).unwrap();
         let bumped = text.replacen(
-            "\"version\": 1",
+            &format!("\"version\": {SAVE_VERSION}"),
             &format!("\"version\": {}", SAVE_VERSION + 1),
             1,
         );
@@ -196,6 +216,25 @@ mod tests {
             read_from(&path, &c),
             Err(SaveError::VersionTooNew(_))
         ));
+        let _ = std::fs::remove_file(&path);
+    }
+
+    /// M3: `migrate`'s first REAL branch (v1→v2, `tutorial_step`). Simulates an actual v1 save
+    /// on disk (no `tutorial_step` key at all, `"version": 1`) — confirms it loads cleanly
+    /// (no panic/error) and lands on `None` (existing players not forced back into onboarding).
+    #[test]
+    fn v1_save_without_tutorial_step_migrates_to_none() {
+        let c = content();
+        let app = crate::app::App::demo();
+        let path = tmp_path("migrate_v1");
+        let mut data = dto::to_save(&app.state, &c);
+        data.version = 1;
+        let mut json: serde_json::Value = serde_json::to_value(&data).expect("SaveData -> Value");
+        json.as_object_mut().unwrap().remove("tutorial_step");
+        json["version"] = serde_json::Value::from(1);
+        std::fs::write(&path, serde_json::to_vec_pretty(&json).unwrap()).unwrap();
+        let loaded = read_from(&path, &c).expect("v1 save (no tutorial_step) harus load bersih");
+        assert_eq!(loaded.tutorial_step, None);
         let _ = std::fs::remove_file(&path);
     }
 }

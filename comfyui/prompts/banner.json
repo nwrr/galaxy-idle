@@ -1,0 +1,12 @@
+{
+  "set": "banner",
+  "workflow": "workflow_zimage_turbo_api",
+  "style": "abstract sci-fi emblem art, symmetrical heraldic composition, deep blue-purple space background with scattered stars, glowing rim light, cinematic concept art, sharp focus, no readable text or letters",
+  "negative": "blurry, low contrast, watermark, readable text, letters, words, logo wordmark, typography, frame, lowres, washed out, cartoonish",
+  "size": "1024x1024",
+  "items": [
+    { "id": "banner", "seed": 5000001,
+      "subject": "radiant starburst energy core at center, stylized angular wing-like linework and circuit patterns framing the glow symmetrically, bright cyan-white light bleeding into deep blue-purple nebula haze, faint scattered stars, sci-fi crest/emblem feel",
+      "ref": "colors:#22d3ee,#312e81,#ffffff" }
+  ]
+}

@@ -1,0 +1,24 @@
+┌ STELLAR IDLE ────────────────────────────────────────────┐
+│Menu | Planet | Research | Galaxy | Warp                  │
+│┌──────────────────────────────────┐       ▄▄▄▄▄▄         │
+││EARTH - Terran (Lvl 1) - d=1.0    │    ▄▀▀▀▀▀▀▀▀▀▀▄      │
+││RESOURCE NODES (3)                │  ▄▀▀▀▀▀▀▀▀▀▀▀▀▀▀▄    │
+││► Iron   richness x1.5 L4 | Cost: │ ▄▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    │
+││175 Credits [--]                  │ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▄   │
+││  Carbon richness x1.2 L2         │ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    │
+││  Water  richness x2.0 L3         │ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    │
+││FACTORIES (4)                     │  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀     │
+││► Mining Drill L4 Extractor [ON] →│    ▀▀▀▀▀▀▀▀▀▀▀▀      │
+││Iron | Cost: 87 Credits [--]      │       ▀▀▀▀▀▀         │
+││  Steel Mill   L2 Refinery [ON]   │                      │
+││  [+ Build]                       │                      │
+││  Research Lab L2 Research Lab    │                      │
+││[ON]                              │                      │
+││Status: Idle                      │                      │
+││[j/k]Pilih [1]Node [2]Upgrade     │                      │
+││                                  │                      │
+││                                  │                      │
+││                                  │                      │
+│└──────────────────────────────────┘                      │
+│g:Galaxy p:Planet r:Research m:Merchant S:Settings ?:Help │
+└──────────────────────────────────────────────────────────┘

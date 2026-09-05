@@ -90,3 +90,35 @@ fn check(view: &str, w: u16, h: u16, golden: &str) {
 - [`snapshots/`](snapshots/) — golden frame `.txt` (target render). Contoh `main_menu_120x40.txt`,
   `planet_view_80x30.txt` sudah disediakan sebagai **target awal**; sesuaikan saat UI nyata jadi
   (lewat `UPDATE_SNAPSHOTS=1`), tapi pastikan tetap lulus `visual_checks.md`.
+
+## Screenshot PNG berwarna (Phase 2, M01–M02)
+
+Golden `.txt` di atas **membuang warna** — cukup utk diff layout/struktur, tapi tak cukup utk
+menilai desain (warna theme, sprite, asset). Phase 2 menambah jalur kedua:
+
+```
+scripts/screenshot.sh <view> <w> <h> [theme]
+#   view : main_menu | planet_view | research | galaxy_map | warp
+#   theme: default | high_contrast | mono (opsional, default: default)
+# → tulis agent/test/screens/<view>_<w>x<h>[_theme].png
+```
+
+Alur verifikasi visual (item UI berlabel gerbang **S** di `agent/phase2/CHECKLIST.md`):
+
+```
+1. scripts/screenshot.sh <view> <w> <h> [theme]   # render → PNG berwarna
+2. Read PNG (Claude vision) — bukan cat/less, harus dibaca sbg gambar
+3. nilai vs agent/phase2/VISUAL_TARGETS.md (Layout/Density/Color/Asset/Polish)
+4. kurang layak → perbaiki kode → ulangi dari langkah 1 (bukan sekali jadi)
+5. layak → catat penilaian di agent/phase2/ITERATION_LOG.md + update visual_checks.md §PNG
+```
+
+**Batas penting:** rasterizer (`src/ui/raster.rs`, `buffer_to_rgba`) menggambar tiap sel sebagai
+blok piksel `CELL_W×CELL_H` — ini **tidak** bisa menampilkan grafis sixel/kitty (protokol overlay
+di luar model sel), jadi galaxy pixel (`ratatui-image`, M17) **tak muncul** di `screenshot.sh`.
+Untuk itu dipakai `scripts/capture_term.sh` (capture terminal nyata, M03) — audit terpisah, bukan
+gerbang tiap iterasi.
+
+Baseline pertama (5 view, 120×40, tema default) tersimpan di
+[`screens/baseline/`](screens/baseline/) sbg rujukan "before" — bandingkan visual setelah
+redesign kategori C (shell/views) & D (galaxy).

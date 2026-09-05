@@ -4,6 +4,7 @@
 pub mod app;
 pub mod balance;
 pub mod content;
+pub mod galaxy_sim;
 pub mod game;
 pub mod rng;
 pub mod save;

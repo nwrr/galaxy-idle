@@ -33,12 +33,55 @@ diambil persis dari blueprint `Text to Image (Z-Image-Turbo)` milikmu:
 
 | File | Fungsi |
 |------|--------|
-| `workflow_zimage_turbo.json` | Workflow UI-format — drag ke ComfyUI untuk pakai/tweak manual |
-| `workflow_zimage_turbo_api.json` | API-format — diposting oleh `generate.py` (atau "Load API format") |
+| `workflows/workflow_zimage_turbo.json` | Workflow UI-format — drag ke ComfyUI untuk pakai/tweak manual |
+| `workflows/workflow_zimage_turbo_api.json` | API-format — diposting oleh `generate.py` (atau "Load API format") |
 | `prompts/characters.json` | 21 karakter: id, group, filename, subject, seed + `style`/`negative` global |
 | `prompts/style.md` | Aturan gaya & framing untuk hasil ASCII yang bagus |
 | `generate.py` | Driver API: loop 21 prompt → simpan PNG ke `assets/source/characters/..` |
 | `cloud/` | Opsi kedua: Flux via fal.ai / Replicate (berbayar) |
+
+## Skema prompt-set (Phase 2, M05)
+
+Tiap file di `prompts/*.json` = satu **set** (grup asset yang di-generate bersama, mis. karakter,
+planet per biome, kapal, galaxy, banner). Skema seragam, dipisah dari workflow (graph ComfyUI):
+
+```jsonc
+{
+  "set": "characters",              // nama set — dipakai `generate.py --set <name>` & folder output
+  "workflow": "workflow_zimage_turbo_api", // basename di workflows/ (tanpa .json), graph dipakai
+  "size": "1024x1024",              // WxH default (override via --size)
+  "style": "...",                   // deskripsi gaya global, digabung ke tiap subject
+  "negative": "...",                // negative prompt global
+  "items": [
+    {
+      "id": "char_male_01",         // unik dlm set; dipakai nama file & --only
+      "seed": 1010001,              // deterministik; verify.py regen naikkan (seed+1, +2, ...)
+      "subject": "...",             // deskripsi spesifik item, digabung dgn style
+      "ref": null,                  // path referensi (relatif assets/source/references/) utk
+                                     // gerbang verify.py M07 (SSIM+phash ≥90%); null = tak ada
+                                     // target kemiripan gambar spesifik (mis. karakter rekaan)
+      "group": "male",              // opsional: sub-folder output (assets/source/<set>/<group>/)
+      "filename": "char_male_01.png" // opsional: nama file eksplisit (default `<id>.png`)
+    }
+  ]
+}
+```
+
+**`items`** menggantikan nama field lama `characters` (spesifik-karakter) — netral lintas jenis
+set. **`ref`** ditambah utk M07 (verify.py similarity gate), 3 bentuk valid:
+- `null` — tak ada target kemiripan (mis. desain alien rekaan tanpa foto acuan).
+- path string — relatif `assets/source/references/...`, dibanding via SSIM+phash (mis. galaxy →
+  `galaxy_2.png`).
+- `"colors:#hex1,#hex2,..."` — dipakai `celestial.json` (M06.3): tak ada foto biome planet nyata,
+  jadi target berupa **2–3 warna dominan** (bukan gambar). Gerbang M07 utk bentuk ini = cek warna
+  dominan hasil generate cukup dekat (jarak warna, bukan SSIM piksel-demi-piksel).
+
+`group`/`filename` tetap ada khusus utk kompatibilitas struktur folder `characters/<group>/` yang
+sudah ada; set baru bebas tak memakainya.
+
+> `prompts/characters.json` sudah dimigrasi ke skema ini (M05.3); `generate.py --set <name>`
+> membaca set apapun di `prompts/<name>.json` (M05.4). Set lain (planet/star/ship/galaxy/banner)
+> menyusul M06.
 
 ## Cara Pakai (lokal)
 
@@ -49,11 +92,13 @@ diambil persis dari blueprint `Text to Image (Z-Image-Turbo)` milikmu:
    ```
 2. **Generate** (dari root repo ini):
    ```
-   python3 comfyui/generate.py --dry-run         # cek rencana dulu
+   python3 comfyui/generate.py --dry-run         # cek rencana dulu (default --set characters)
    python3 comfyui/generate.py                    # generate 21 → assets/source/characters/
    # subset:
    python3 comfyui/generate.py --only char_alien_03
    python3 comfyui/generate.py --group female --size 832x1216
+   # set lain (M06+, mis. planet per biome) — sama pola begitu prompts/<set>.json ada:
+   python3 comfyui/generate.py --set <nama-set> --dry-run
    ```
 3. **Publish ke runtime** (karakter = **gambar**, dirender via `ratatui-image`, BUKAN ASCII):
    ```

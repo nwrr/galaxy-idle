@@ -9,7 +9,14 @@ use ratatui::style::{Style, Stylize};
 use ratatui::text::Line;
 use ratatui::widgets::{Block, Paragraph};
 
-const KEYS: [&str; 5] = ["g:Galaxy", "p:Planet", "r:Research", "m:Merchant", "?:Help"];
+const KEYS: [&str; 6] = [
+    "g:Galaxy",
+    "p:Planet",
+    "r:Research",
+    "m:Merchant",
+    "S:Settings",
+    "?:Help",
+];
 
 pub fn render(f: &mut Frame, app: &App, area: Rect) {
     let th = theme::theme(app.state.settings.theme);
@@ -22,5 +29,6 @@ pub fn render(f: &mut Frame, app: &App, area: Rect) {
             .map(|e| Line::styled(*e, Style::default().fg(th.dim))),
     )
     .collect();
-    f.render_widget(Paragraph::new(lines).block(Block::bordered()), area);
+    let block = Block::bordered().border_style(Style::default().fg(th.dim));
+    f.render_widget(Paragraph::new(lines).block(block), area);
 }

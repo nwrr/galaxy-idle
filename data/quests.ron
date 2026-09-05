@@ -1,0 +1,179 @@
+// data/quests.ron — Vec<QuestDef>. M6 branching questline.
+// requirement: None|TechCompleted(tech_id)|ShipTraveling|WarpJumped|Manual (Manual = titik
+// cabang, butuh player pick via `choose_branch`, tak pernah auto-advance).
+// stages[].branches: kosong=terminal, 1=auto-chain linear, >1=titik cabang NYATA (hasil beda).
+// arc: "pioneer" (5 quest, awal permainan) | "warp_frontier" (5 quest, prestige/riset lanjut).
+[
+    (
+        id: "pioneer_01_landfall",
+        arc: "pioneer",
+        title: "Landfall",
+        stages: [
+            (
+                id: "start",
+                text: "Kapal kolonis mendarat di Bumi. Captain, sistem ini menunggu dibangun.",
+                requirement: None,
+                effects: [GrantCredits(100.0)],
+                branches: [],
+            ),
+        ],
+    ),
+    (
+        id: "pioneer_02_first_extractor",
+        arc: "pioneer",
+        title: "First Extractor",
+        stages: [
+            (
+                id: "start",
+                text: "Bangun extractor pertama untuk mulai menambang sumber daya mentah.",
+                requirement: None,
+                effects: [],
+                branches: [(label: "lanjut", next_stage: "done", effects: [])],
+            ),
+            (
+                id: "done",
+                text: "Extractor pertama berdiri. Roda ekonomi mulai berputar.",
+                requirement: Manual,
+                effects: [GrantCredits(150.0)],
+                branches: [],
+            ),
+        ],
+    ),
+    (
+        id: "pioneer_03_steel_dawn",
+        arc: "pioneer",
+        title: "Steel Dawn",
+        stages: [
+            (
+                id: "start",
+                text: "Riset metalurgi dasar akan membuka jalur manufaktur pertama.",
+                requirement: TechCompleted("manu_steel"),
+                effects: [GrantCredits(300.0)],
+                branches: [],
+            ),
+        ],
+    ),
+    (
+        id: "pioneer_04_first_departure",
+        arc: "pioneer",
+        title: "First Departure",
+        stages: [
+            (
+                id: "start",
+                text: "Ship berangkat mengarungi sistem untuk pertama kali.",
+                requirement: ShipTraveling,
+                effects: [GrantCredits(120.0)],
+                branches: [],
+            ),
+        ],
+    ),
+    (
+        id: "pioneer_05_crossroads",
+        arc: "pioneer",
+        title: "Crossroads",
+        stages: [
+            (
+                id: "start",
+                text: "Dewan kolonis terpecah: fokus EKSPANSI cepat, atau FONDASI yang kokoh?",
+                requirement: Manual,
+                effects: [],
+                branches: [
+                    (
+                        label: "ekspansi",
+                        next_stage: "expansion_path",
+                        effects: [GrantWarpCores(5)],
+                    ),
+                    (
+                        label: "fondasi",
+                        next_stage: "foundation_path",
+                        effects: [GrantCredits(500.0)],
+                    ),
+                ],
+            ),
+            (
+                id: "expansion_path",
+                text: "Kolonis memilih ekspansi -- Warp Core cadangan disiapkan lebih awal.",
+                requirement: Manual,
+                effects: [],
+                branches: [],
+            ),
+            (
+                id: "foundation_path",
+                text: "Kolonis memilih fondasi -- kas kolonial diperkuat drpd ekspansi dini.",
+                requirement: Manual,
+                effects: [],
+                branches: [],
+            ),
+        ],
+    ),
+    (
+        id: "warp_01_titanium_age",
+        arc: "warp_frontier",
+        title: "Titanium Age",
+        stages: [
+            (
+                id: "start",
+                text: "Paduan titanium membuka babak baru rekayasa armada.",
+                requirement: TechCompleted("manu_titanium"),
+                effects: [GrantCredits(400.0)],
+                branches: [],
+            ),
+        ],
+    ),
+    (
+        id: "warp_02_deep_core",
+        arc: "warp_frontier",
+        title: "Deep Core",
+        stages: [
+            (
+                id: "start",
+                text: "Penambang inti-dalam menjangkau lapisan sumber daya yang lebih kaya.",
+                requirement: TechCompleted("ext_deep_core"),
+                effects: [GrantWarpCores(3)],
+                branches: [],
+            ),
+        ],
+    ),
+    (
+        id: "warp_03_engine_upgrade",
+        arc: "warp_frontier",
+        title: "Engine Mk.II",
+        stages: [
+            (
+                id: "start",
+                text: "Mesin warp generasi kedua siap diaktifkan.",
+                requirement: TechCompleted("aero_warp_mk2"),
+                effects: [GrantCredits(600.0)],
+                branches: [],
+            ),
+        ],
+    ),
+    (
+        id: "warp_04_first_jump",
+        arc: "warp_frontier",
+        title: "First Jump",
+        stages: [
+            (
+                id: "start",
+                text: "Lompatan warp pertama -- galaksi asal ditinggalkan demi cakrawala baru.",
+                requirement: WarpJumped,
+                effects: [GrantWarpCores(10)],
+                branches: [],
+            ),
+        ],
+    ),
+    (
+        id: "warp_05_far_horizon",
+        arc: "warp_frontier",
+        title: "Far Horizon",
+        stages: [
+            (
+                id: "start",
+                text: "Astro-kartografi jarak jauh membuka akses ke sektor terluar galaksi.",
+                requirement: TechCompleted("astro_far_warp"),
+                effects: [GrantWarpCores(15)],
+                branches: [],
+            ),
+        ],
+    ),
+]

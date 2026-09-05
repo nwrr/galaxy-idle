@@ -29,19 +29,49 @@ fn check(view: &str, w: u16, h: u16, golden: &str) {
     );
 }
 
+// M15.14: golden dikelompokkan per view jadi sub-folder (`main_menu/`, `planet_view/`,
+// `research/`) — CONVENTIONS.md §1 batasi maks 10 file/folder, nambah 2 breakpoint `research`
+// bikin folder flat lama (11 file) lewat batas. `warp` msh 1 file (blm py breakpoint lain)
+// jadi tetap di root. M20.6: `galaxy_map` skrng py 3 breakpoint -> dipindah `galaxy_map/`
+// sub-folder (pola SAMA `planet_view`/`research`), `120x40.txt` lama di-`git mv`.
+
 #[test]
 fn main_menu() {
-    check("main_menu", 120, 40, "main_menu_120x40.txt");
+    check("main_menu", 120, 40, "main_menu/120x40.txt");
 }
 
 #[test]
 fn planet_view() {
-    check("planet_view", 80, 30, "planet_view_80x30.txt");
+    check("planet_view", 80, 30, "planet_view/80x30.txt");
+}
+
+// -- M14.20: planet_view di 3 breakpoint (main_menu sudah py ini, planet_view baru 1/3) --
+
+#[test]
+fn planet_view_full() {
+    check("planet_view", 120, 40, "planet_view/120x40.txt");
+}
+
+#[test]
+fn planet_view_minimal() {
+    check("planet_view", 60, 24, "planet_view/60x24.txt");
 }
 
 #[test]
 fn research() {
-    check("research", 120, 40, "research_120x40.txt");
+    check("research", 120, 40, "research/120x40.txt");
+}
+
+// -- M15.14: research di 3 breakpoint (main_menu/planet_view sudah py ini, research baru 1/3) --
+
+#[test]
+fn research_compact() {
+    check("research", 80, 30, "research/80x30.txt");
+}
+
+#[test]
+fn research_minimal() {
+    check("research", 60, 24, "research/60x24.txt");
 }
 
 #[test]
@@ -51,17 +81,29 @@ fn warp() {
 
 #[test]
 fn galaxy_map() {
-    check("galaxy_map", 120, 40, "galaxy_map_120x40.txt");
+    check("galaxy_map", 120, 40, "galaxy_map/120x40.txt");
+}
+
+// -- M20.6: galaxy_map di 3 breakpoint (main_menu/planet_view/research sudah py ini) --
+
+#[test]
+fn galaxy_map_compact() {
+    check("galaxy_map", 80, 30, "galaxy_map/80x30.txt");
+}
+
+#[test]
+fn galaxy_map_minimal() {
+    check("galaxy_map", 60, 24, "galaxy_map/60x24.txt");
 }
 
 // -- Responsiveness: main_menu di tiap breakpoint (06 §Responsive) --
 
 #[test]
 fn main_menu_compact() {
-    check("main_menu", 80, 30, "main_menu_80x30.txt");
+    check("main_menu", 80, 30, "main_menu/80x30.txt");
 }
 
 #[test]
 fn main_menu_minimal() {
-    check("main_menu", 60, 24, "main_menu_60x24.txt");
+    check("main_menu", 60, 24, "main_menu/60x24.txt");
 }

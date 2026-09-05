@@ -1,8 +1,10 @@
 {
+  "set": "characters",
+  "workflow": "workflow_zimage_turbo_api",
   "style": "sci-fi character portrait, head and shoulders bust, centered, facing forward, dramatic rim lighting, strong single key light, pure black background, high contrast, detailed face, painterly concept art, cinematic, sharp focus",
   "negative": "blurry, low contrast, busy background, cluttered background, bright background, washed out, watermark, text, logo, frame, multiple people, extra limbs, deformed, mutated, lowres",
   "size": "1024x1024",
-  "characters": [
+  "items": [
     { "id": "char_male_01", "group": "male", "filename": "char_male_01.png", "seed": 1010001,
       "subject": "a stern human male starship captain, short groomed hair, defined jawline, futuristic uniform with shoulder insignia, confident commanding expression" },
     { "id": "char_male_02", "group": "male", "filename": "char_male_02.png", "seed": 1010002,

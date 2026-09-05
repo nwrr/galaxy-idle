@@ -6,7 +6,7 @@ use crate::app::App;
 use crate::game::defs::ResourceId;
 use crate::game::prestige::{total_value, warp_cores_gain, warp_threshold};
 use crate::game::state::GameState;
-use crate::ui::{format_num, theme};
+use crate::ui::{compact_num, theme};
 use ratatui::Frame;
 use ratatui::layout::Rect;
 use ratatui::style::{Style, Stylize};
@@ -64,8 +64,8 @@ pub fn render(f: &mut Frame, app: &App, area: Rect) {
             format!(
                 "  {}: {} / {} {}",
                 content.resources.get(r.0).name,
-                format_num(got),
-                format_num(*amt),
+                compact_num(got),
+                compact_num(*amt),
                 if ok { "[OK]" } else { "[--]" }
             ),
             Style::default().fg(if ok { th.good } else { th.alert }),
@@ -75,7 +75,7 @@ pub fn render(f: &mut Frame, app: &App, area: Rect) {
     let cores = warp_cores_gain(total_value(&app.state, content));
     lines.push(Line::raw(""));
     lines.push(Line::styled(
-        format!("Estimated Warp Cores gained: {}", format_num(cores as f64)),
+        format!("Estimated Warp Cores gained: {}", compact_num(cores as f64)),
         Style::default().fg(th.rare),
     ));
     lines.push(Line::raw(""));
@@ -96,5 +96,6 @@ pub fn render(f: &mut Frame, app: &App, area: Rect) {
         Style::default().fg(if all_ok { th.good } else { th.dim }),
     ));
 
-    f.render_widget(Paragraph::new(lines).block(Block::bordered()), area);
+    let block = Block::bordered().border_style(Style::default().fg(th.dim));
+    f.render_widget(Paragraph::new(lines).block(block), area);
 }

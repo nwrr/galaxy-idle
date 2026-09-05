@@ -29,6 +29,16 @@ pub struct SaveData {
     pub research: crate::game::state::ResearchState,
     pub prestige: SavePrestige,
     pub settings: SaveSettings,
+    /// M3: `#[serde(default)]` — v1 save lama tak py field ini di JSON; `migrate` (`save/mod.rs`)
+    /// jg menambahkannya eksplisit ke `null` sblm deserialize, tp default di sini jd jaring
+    /// pengaman kedua (konsisten prinsip modul "id tak dikenal → skip, jangan crash").
+    #[serde(default)]
+    pub tutorial_step: Option<u8>,
+    /// M6: `QuestState` sudah String-keyed (quest/stage id) sama spt `research` di atas --
+    /// tak perlu DTO konversi terpisah, disimpan RAW (pola SAMA `research`). `#[serde(default)]`
+    /// spy save v1/v2 (blm py quest) tetap load bersih (`migrate` jg tambahkan eksplisit).
+    #[serde(default)]
+    pub quests: crate::game::state::QuestState,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -225,6 +235,8 @@ pub fn to_save(state: &GameState, c: &Content) -> SaveData {
                 .collect(),
             theme: state.settings.theme,
         },
+        tutorial_step: state.tutorial_step,
+        quests: state.quests.clone(),
     }
 }
 
@@ -359,5 +371,7 @@ pub fn from_save(save: &SaveData, c: &Content) -> GameState {
             auto_sell,
             theme: save.settings.theme,
         },
+        tutorial_step: save.tutorial_step,
+        quests: save.quests.clone(),
     }
 }
